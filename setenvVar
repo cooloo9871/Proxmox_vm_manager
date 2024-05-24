@@ -14,9 +14,9 @@ export GATEWAY="192.168.61.2"
 export NAMESERVER="8.8.8.8"
 
 # Set VM Hardware Env
-export CPU_socket="1"
+export CPU_socket="2"
 export CPU_core="2"
-export MEM="2048"
+export MEM="4096"
 export Network_device="vmbr0"
-export DISK="60"
+export DISK="50"
 export STORAGE="local-lvm"
