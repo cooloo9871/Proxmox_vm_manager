@@ -83,16 +83,16 @@ create_vm() {
     fi
     if [[ ! -f /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 ]]; then
     wget https://dl-cdn.alpinelinux.org/alpine/v3.19/releases/cloud/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 -O /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2
-    virt-customize --install qemu-guest-agent -a nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2
-    virt-customize --install bash -a nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2
-    virt-customize --install sudo -a nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2
+    virt-customize --install qemu-guest-agent -a /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2
+    virt-customize --install bash -a /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2
+    virt-customize --install sudo -a /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2
     fi
 EOF
 
   for ((z=$idstart;z<=$idend;z++))
   do
     ssh root@"$EXECUTE_NODE" "qm create $z --name alp-$z --memory 4096 --sockets 2 --cores 2 --net0 virtio,bridge=vmbr0" &>> /tmp/pve_vm_manager.log
-    ssh root@"$EXECUTE_NODE" "qm importdisk $z nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 local-lvm" &>> /tmp/pve_vm_manager.log
+    ssh root@"$EXECUTE_NODE" "qm importdisk $z /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 local-lvm" &>> /tmp/pve_vm_manager.log
     ssh root@"$EXECUTE_NODE" "qm set $z --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-$z-disk-0" &>> /tmp/pve_vm_manager.log
     ssh root@"$EXECUTE_NODE" "qm resize $z scsi0 50G" &>> /tmp/pve_vm_manager.log
     ssh root@"$EXECUTE_NODE" "qm set $z --ide2 local-lvm:cloudinit" &>> /tmp/pve_vm_manager.log
