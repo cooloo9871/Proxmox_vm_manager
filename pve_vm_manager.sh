@@ -155,7 +155,7 @@ delete_vm() {
   for ((h=$idstart;h<=$idend;h++))
   do
     if ssh root@"$EXECUTE_NODE" qm list | grep "$h" | grep running &>/dev/null; then
-      printf "${RED}=====stop vm $h first=====${NC}\n" && exit 1
+      printf "${RED}=====stop vm $h first=====${NC}\n"
     else
       ssh root@"$EXECUTE_NODE" qm destroy $h &>> /tmp/pve_vm_manager.log
       printf "${GRN}=====delete vm $h completed=====${NC}\n"
@@ -170,8 +170,12 @@ reboot_vm() {
   idend=$(echo $VM_id | cut -d '~' -f 2)
   for ((j=$idstart;j<=$idend;j++))
   do
-    ssh root@"$EXECUTE_NODE" qm reboot $j &>> /tmp/pve_vm_manager.log
-    printf "${GRN}=====reboot vm $j completed=====${NC}\n"
+    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$j" | grep running &>/dev/null; then
+      printf "${RED}=====vm $j is not running=====${NC}\n"
+    else
+      ssh root@"$EXECUTE_NODE" qm reboot $j &>> /tmp/pve_vm_manager.log
+      printf "${GRN}=====reboot vm $j completed=====${NC}\n"
+    fi
   done
 }
 
