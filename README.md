@@ -96,3 +96,11 @@ NOTE: 'sudo' is not installed by default, please use 'doas' instead.
 
 You may change this message by editing /etc/motd.
 ```
+
+## VM default spec
+- CPU: 4C
+- Memory: 4G
+- Disk: 50G
+- Network: vmbr0
+
+![image](https://github.com/cooloo9871/Proxmox_vm_manager/assets/62133915/953ed351-036c-4636-9917-8ce9a0d6c76a)
