@@ -15,7 +15,7 @@ export NODE_HOSTNAME=('p1' 'p2' 'p3')
 # The EXECUTE_NODE parameter specifies the proxmox node on which to manage the vm.
 export EXECUTE_NODE="p2"
 
-# Set VM Env
+# Set VM Network Env
 # Please make sure that the vm id and vm ip is not conflicting.
 export VM_id="600~603"
 export VM_netid="192.168.61"
@@ -23,6 +23,13 @@ export VM_ip="110~113"
 export NETMASK="255.255.255.0"
 export GATEWAY="192.168.61.2"
 export NAMESERVER="8.8.8.8"
+
+# Set VM Hardware Env
+export CPU_socket="2"
+export CPU_core="2"
+export MEM="4096"
+export Network_device="vmbr0"
+export DISK="50"
 ```
 
 ### View the script options
