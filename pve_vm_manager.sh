@@ -171,7 +171,7 @@ reboot_vm() {
   for ((j=$idstart;j<=$idend;j++))
   do
     ssh root@"$EXECUTE_NODE" qm reboot $j &>> /tmp/pve_vm_manager.log
-    printf "${GRN}=====reboot vm $h completed=====${NC}\n"
+    printf "${GRN}=====reboot vm $j completed=====${NC}\n"
   done
 }
 
