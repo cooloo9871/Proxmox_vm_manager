@@ -58,7 +58,7 @@ check_env() {
   ### check command
   ssh root@"$EXECUTE_NODE" which virt-customize >/dev/null
   if [[ ! "$?" == "0" ]]; then
-    printf "${RED}=====Please install virt-customize=====${NC}\n"
+    printf "${RED}=====Please install virt-customize on $EXECUTE_NODE=====${NC}\n"
     exit 1
   else
     printf "${GRN}=====check environment success=====${NC}\n"
