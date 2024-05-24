@@ -42,6 +42,7 @@ Available options:
 
 create    create the vm based on the setenvVar parameter.
 start     start all vm.
+reboot    reboot all vm.
 stop      stop all vm.
 delete    delete all vm.
 help      display this help and exit.
@@ -66,6 +67,15 @@ $ bash pve_vm_manager.sh start
 =====start vm 601=====
 =====start vm 602=====
 =====start vm 603=====
+```
+### Reboot vm
+```
+$ bash pve_vm_manager.sh reboot
+[Stage: Reboot VM]
+=====reboot vm completed=====
+=====reboot vm completed=====
+=====reboot vm  ompleted=====
+=====reboot vm completed=====
 ```
 ### Stop vm
 ```
