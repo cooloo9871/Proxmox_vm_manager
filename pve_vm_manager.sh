@@ -66,6 +66,7 @@ check_env() {
   ssh root@"$EXECUTE_NODE" which virt-customize >/dev/null
   if [[ ! "$?" == "0" ]]; then
     printf "${RED}=====Please install virt-customize on $EXECUTE_NODE=====${NC}\n"
+    printf "${YEL}=====Run this command on $EXECUTE_NODE: sudo apt install -y libguestfs-tools=====${NC}\n"
     exit 1
   else
     printf "${GRN}=====Check Environment Success=====${NC}\n"
