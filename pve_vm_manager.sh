@@ -26,14 +26,14 @@ check_env() {
   done
 
   ### check ssh login to Proxmox node without password
-  for n in $NODE_1_IP $NODE_2_IP $NODE_3_IP
+  for n in ${NODE_IP[@]}
   do
     ssh -o BatchMode=yes -o "StrictHostKeyChecking no" root@"$n" '/bin/true' &> /dev/null
     [[ "$?" != "0" ]] && printf "${RED}Must be configured to use ssh to login to the Proxmox node1 without a password.${NC}\n" && exit 1
   done
 
   ### check ssh login to Proxmox node use hostname
-  for i in NODE_hostname1 NODE_hostname2 NODE_hostname3
+  for i in ${NODE_HOSTNAME[@]}
   do
     ssh -o BatchMode=yes -o "StrictHostKeyChecking no" root@"$i" '/bin/true' &> /dev/null
     [[ "$?" != "0" ]] && printf "${RED}Must be configured to use hostname to ssh login to the Proxmox $i.${NC}\n" && exit 1
