@@ -10,12 +10,8 @@ git clone https://github.com/cooloo9871/Proxmox_vm_manager.git;cd Proxmox_vm_man
 ```
 $ nano setenvVar
 # Set Proxmox Cluster Env
-export NODE_1_IP="192.168.1.3"
-export NODE_2_IP="192.168.1.4"
-export NODE_3_IP="192.168.1.5"
-export NODE_hostname1="p1"
-export NODE_hostname2="p2"
-export NODE_hostname3="p3"
+export NODE_IP=('192.168.1.3' '192.168.1.4' '192.168.1.5')
+export NODE_HOSTNAME=('p1' 'p2' 'p3')
 # The EXECUTE_NODE parameter specifies the proxmox node on which to manage the vm.
 export EXECUTE_NODE="p2"
 
