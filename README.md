@@ -79,4 +79,6 @@ $ bash pve_vm_manager.sh delete
 =====delete vm 602 completed=====
 =====delete vm 603 completed=====
 ```
-
+### Login vm
+#### account/password: bigred/bigred
+![image](https://github.com/cooloo9871/Proxmox_vm_manager/assets/62133915/00a91b90-5ebf-4a60-a45a-b5572c359ef6)
