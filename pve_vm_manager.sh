@@ -32,6 +32,13 @@ check_env() {
     [[ "$?" != "0" ]] && printf "${RED}Must be configured to use ssh to login to the Proxmox node1 without a password.${NC}\n" && exit 1
   done
 
+  ### check ssh login to Proxmox node use hostname
+  for i in NODE_hostname1 NODE_hostname2 NODE_hostname3
+  do
+    ssh -o BatchMode=yes -o "StrictHostKeyChecking no" root@"$i" '/bin/true' &> /dev/null
+    [[ "$?" != "0" ]] && printf "${RED}Must be configured to use hostname to ssh login to the Proxmox $i.${NC}\n" && exit 1
+  done
+
   ### check vm id
   idstart=$(echo $VM_id | cut -d '~' -f 1)
   idend=$(echo $VM_id | cut -d '~' -f 2)
