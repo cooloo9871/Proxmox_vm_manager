@@ -101,7 +101,7 @@ EOF
     ssh root@"$EXECUTE_NODE" "qm create $z --name alp-$z --memory $MEM --sockets $CPU_socket --cores $CPU_core --net0 virtio,bridge=$Network_device" &>> /tmp/pve_vm_manager.log
     ssh root@"$EXECUTE_NODE" "qm importdisk $z /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 local-lvm" &>> /tmp/pve_vm_manager.log
     ssh root@"$EXECUTE_NODE" "qm set $z --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-$z-disk-0" &>> /tmp/pve_vm_manager.log
-    ssh root@"$EXECUTE_NODE" "qm resize $z scsi0 $DISKG" &>> /tmp/pve_vm_manager.log
+    ssh root@"$EXECUTE_NODE" "qm resize $z scsi0 ${DISK}G" &>> /tmp/pve_vm_manager.log
     ssh root@"$EXECUTE_NODE" "qm set $z --ide2 local-lvm:cloudinit" &>> /tmp/pve_vm_manager.log
     ssh root@"$EXECUTE_NODE" "qm set $z --boot c --bootdisk scsi0" &>> /tmp/pve_vm_manager.log
     ssh root@"$EXECUTE_NODE" "qm set $z --serial0 socket --vga serial0" &>> /tmp/pve_vm_manager.log
