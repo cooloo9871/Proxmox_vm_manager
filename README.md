@@ -52,7 +52,15 @@ $ bash pve_vm_manager.sh create
 =====create vm 602 success=====
 =====create vm 603 success=====
 ```
-
+### Start vm
+```
+$ bash pve_vm_manager.sh start
+[Stage: Start VM]
+=====start vm 600=====
+=====start vm 601=====
+=====start vm 602=====
+=====start vm 603=====
+```
 ### Stop vm
 ```
 $ bash pve_vm_manager.sh stop
