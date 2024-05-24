@@ -104,7 +104,7 @@ NOTE: 'sudo' is not installed by default, please use 'doas' instead.
 You may change this message by editing /etc/motd.
 ```
 
-## VM default spec
+## VM spec
 - CPU: 4C
 - Memory: 4G
 - Disk: 50G
