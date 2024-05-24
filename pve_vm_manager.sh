@@ -132,8 +132,12 @@ start_vm() {
   idend=$(echo $VM_id | cut -d '~' -f 2)
   for ((d=$idstart;d<=$idend;d++))
   do
-    ssh root@"$EXECUTE_NODE" qm start $d &>> /tmp/pve_vm_manager.log
-    printf "${GRN}=====start vm $d=====${NC}\n"
+    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$d" &>/dev/null; then
+      printf "${RED}=====vm $d is not found=====${NC}\n"
+    else
+      ssh root@"$EXECUTE_NODE" qm start $d &>> /tmp/pve_vm_manager.log
+      printf "${GRN}=====start vm $d=====${NC}\n"
+    fi
   done
 }
 
@@ -143,8 +147,12 @@ stop_vm() {
   idend=$(echo $VM_id | cut -d '~' -f 2)
   for ((e=$idstart;e<=$idend;e++))
   do
-    ssh root@"$EXECUTE_NODE" qm stop $e &>> /tmp/pve_vm_manager.log
-    printf "${GRN}=====stop vm $e completed=====${NC}\n"
+    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$e" &>/dev/null; then
+      printf "${RED}=====vm $e is not found=====${NC}\n"
+    else
+      ssh root@"$EXECUTE_NODE" qm stop $e &>> /tmp/pve_vm_manager.log
+      printf "${GRN}=====stop vm $e completed=====${NC}\n"
+    fi
   done
 }
 
@@ -154,14 +162,16 @@ delete_vm() {
   idend=$(echo $VM_id | cut -d '~' -f 2)
   for ((h=$idstart;h<=$idend;h++))
   do
-    if ssh root@"$EXECUTE_NODE" qm list | grep "$h" | grep running &>/dev/null; then
+    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$h" &>/dev/null; then
+      printf "${RED}=====vm $h is not found=====${NC}\n"
+    elif ssh root@"$EXECUTE_NODE" qm list | grep "$h" | grep running &>/dev/null; then
       printf "${RED}=====stop vm $h first=====${NC}\n"
     else
       ssh root@"$EXECUTE_NODE" qm destroy $h &>> /tmp/pve_vm_manager.log
       printf "${GRN}=====delete vm $h completed=====${NC}\n"
     fi
   done
-  ssh root@"$EXECUTE_NODE" rm /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 && printf "${GRN}=====delete nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 completed=====${NC}\n"
+  ssh root@"$EXECUTE_NODE" rm /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 &>> /tmp/pve_vm_manager.log && printf "${GRN}=====delete nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 completed=====${NC}\n"
 }
 
 reboot_vm() {
@@ -170,7 +180,9 @@ reboot_vm() {
   idend=$(echo $VM_id | cut -d '~' -f 2)
   for ((j=$idstart;j<=$idend;j++))
   do
-    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$j" | grep running &>/dev/null; then
+    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$j" &>/dev/null; then
+      printf "${RED}=====vm $j is not found=====${NC}\n"
+    elif ! ssh root@"$EXECUTE_NODE" qm list | grep "$j" | grep running &>/dev/null; then
       printf "${RED}=====vm $j is not running=====${NC}\n"
     else
       ssh root@"$EXECUTE_NODE" qm reboot $j &>> /tmp/pve_vm_manager.log
