@@ -72,10 +72,10 @@ $ bash pve_vm_manager.sh start
 ```
 $ bash pve_vm_manager.sh reboot
 [Stage: Reboot VM]
-=====reboot vm completed=====
-=====reboot vm completed=====
-=====reboot vm  ompleted=====
-=====reboot vm completed=====
+=====reboot vm 600 completed=====
+=====reboot vm 601 completed=====
+=====reboot vm 602 completed=====
+=====reboot vm 603 completed=====
 ```
 ### Stop vm
 ```
