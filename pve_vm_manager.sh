@@ -17,7 +17,7 @@ Debug() {
 
 # check environment
 check_env() {
-  printf "${GRN}[Stage: check env]${NC}\n"
+  printf "${GRN}[Stage: Check Environment]${NC}\n"
   [[ ! -f ./setenvVar ]] && printf "${RED}setenvVar file not found${NC}\n" && exit 1
   var_names=$(cat setenvVar | grep -v '#' | cut -d " " -f 2 | cut -d "=" -f 1 | tr -s "\n" " " | sed 's/[ \t]*$//g')
   for var_name in ${var_names[@]}
@@ -61,7 +61,7 @@ check_env() {
     printf "${RED}=====Please install virt-customize on $EXECUTE_NODE=====${NC}\n"
     exit 1
   else
-    printf "${GRN}=====check environment success=====${NC}\n"
+    printf "${GRN}=====Check Environment Success=====${NC}\n"
   fi
 }
 
@@ -101,6 +101,7 @@ EOF
   done
 
   scp ./user.yml root@"$EXECUTE_NODE":"/var/lib/vz/snippets/user.yml" &>> /tmp/pve_vm_manager.log
+  ssh root@"$EXECUTE_NODE" sed -i "s/ns/$NAMESERVER/g" "/var/lib/vz/snippets/user.yml" &>> /tmp/pve_vm_manager.log
   for ((a=$idstart,b=$ipstart;a<=$idend,b<=$ipend;a++,b++))
   do
     scp ./network.yml root@"$EXECUTE_NODE":"/var/lib/vz/snippets/network$a.yml" &>> /tmp/pve_vm_manager.log
@@ -112,28 +113,46 @@ EOF
 
   for ((c=$idstart;c<=$idend;c++))
   do
-    ssh root@"$EXECUTE_NODE" qm set $c --cicustom "user=local:snippets/user$c.yml,network=local:snippets/network$c.yml" &>> /tmp/pve_vm_manager.log
+    ssh root@"$EXECUTE_NODE" qm set $c --cicustom "user=local:snippets/user.yml,network=local:snippets/network$c.yml" &>> /tmp/pve_vm_manager.log
+    printf "${GRN}=====create vm $c success=====${NC}\n"
   done
-
-  printf "${GRN}=====create vm success=====${NC}\n"
 }
 
 start_vm() {
-  printf "${GRN}=====start vm=====${NC}\n"
+  printf "${GRN}[Stage: Start VM]${NC}\n"
+  idstart=$(echo $VM_id | cut -d '~' -f 1)
+  idend=$(echo $VM_id | cut -d '~' -f 2)
   for ((d=$idstart;d<=$idend;d++))
   do
     ssh root@"$EXECUTE_NODE" qm start $d &>> /tmp/pve_vm_manager.log
+    printf "${GRN}=====start vm $d=====${NC}\n"
   done
-  printf "${GRN}=====start vm completed=====${NC}\n"
 }
 
 stop_vm() {
-  printf "${GRN}=====stop vm=====${NC}\n"
+  printf "${GRN}[Stage: Stop VM]${NC}\n"
+  idstart=$(echo $VM_id | cut -d '~' -f 1)
+  idend=$(echo $VM_id | cut -d '~' -f 2)
   for ((e=$idstart;e<=$idend;e++))
   do
     ssh root@"$EXECUTE_NODE" qm stop $e &>> /tmp/pve_vm_manager.log
+    printf "${GRN}=====stop vm $e completed=====${NC}\n"
   done
-  printf "${GRN}=====stop vm completed=====${NC}\n"
+}
+
+delete_vm() {
+  printf "${GRN}[Stage: Delete VM]${NC}\n"
+  idstart=$(echo $VM_id | cut -d '~' -f 1)
+  idend=$(echo $VM_id | cut -d '~' -f 2)
+  for ((h=$idstart;h<=$idend;h++))
+  do
+    if ssh root@"$EXECUTE_NODE" qm list | grep "$h" | grep running &>/dev/null; then
+      printf "${RED}=====stop vm $h first=====${NC}\n" && exit 1
+    else
+      ssh root@"$EXECUTE_NODE" qm destroy $h &>> /tmp/pve_vm_manager.log
+      printf "${GRN}=====delete vm $h completed=====${NC}\n"
+    fi
+  done
 }
 
 help() {
@@ -143,6 +162,7 @@ Usage: pve_vm_manager.sh [OPTIONS]
 Available options:
 
 create    create the vm based on the setenvVar parameter.
+start     start all vm.
 stop      stop all vm.
 delete    delete all vm.
 help      display this help and exit.
@@ -169,6 +189,10 @@ else
     stop)
       [[ -f /tmp/pve_vm_manager.log ]] && sudo rm /tmp/pve_vm_manager.log
       stop_vm
+    ;;
+    delete)
+      [[ -f /tmp/pve_vm_manager.log ]] && sudo rm /tmp/pve_vm_manager.log
+      delete_vm
     ;;
     *)
       help
