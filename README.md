@@ -79,4 +79,20 @@ $ bash pve_vm_manager.sh delete
 ```
 ### Login vm
 #### account/password: bigred/bigred
-![image](https://github.com/cooloo9871/Proxmox_vm_manager/assets/62133915/00a91b90-5ebf-4a60-a45a-b5572c359ef6)
+![image](https://github.com/cooloo9871/Proxmox_vm_manager/assets/62133915/2da5eef1-0431-47eb-876d-82226997be0f)
+```
+$ ssh bigred@192.168.61.110
+bigred@192.168.61.110's password:
+Welcome to Alpine!
+
+The Alpine Wiki contains a large amount of how-to guides and general
+information about administrating Alpine systems.
+See <https://wiki.alpinelinux.org>.
+
+Alpine release notes:
+* <https://alpinelinux.org/posts/Alpine-3.19.1-released.html>
+
+NOTE: 'sudo' is not installed by default, please use 'doas' instead.
+
+You may change this message by editing /etc/motd.
+```
