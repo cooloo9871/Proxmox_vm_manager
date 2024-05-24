@@ -83,6 +83,7 @@ $ bash pve_vm_manager.sh delete
 =====delete vm 601 completed=====
 =====delete vm 602 completed=====
 =====delete vm 603 completed=====
+=====delete nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 completed=====
 ```
 ### Login vm
 #### account/password: bigred/bigred
