@@ -160,6 +160,7 @@ delete_vm() {
       printf "${GRN}=====delete vm $h completed=====${NC}\n"
     fi
   done
+  ssh root@"$EXECUTE_NODE" rm /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 && printf "${GRN}=====delete nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 completed=====${NC}\n"
 }
 
 help() {
