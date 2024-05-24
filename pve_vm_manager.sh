@@ -44,6 +44,17 @@ check_env() {
     fi
   done
 
+  ### check vm ip
+  ipstart=$(echo $VM_ip | cut -d '~' -f 1)
+  ipend=$(echo $VM_ip | cut -d '~' -f 2)
+  for ((g=$idstart;g<=$idend;g++))
+  do
+    ping -c 1 $VM_netid.$g &>/dev/null
+    if [[ "$?" == "0" ]]; then
+      printf "${RED}=====$VM_netid.$g VM IP Already used=====${NC}\n" && exit 1
+    fi
+  done
+
   ### check command
   ssh root@"$EXECUTE_NODE" which virt-customize >/dev/null
   if [[ ! "$?" == "0" ]]; then
