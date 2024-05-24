@@ -13,6 +13,8 @@ $ nano setenvVar
 export NODE_1_IP="192.168.1.3"
 export NODE_2_IP="192.168.1.4"
 export NODE_3_IP="192.168.1.5"
+
+# The EXECUTE_NODE parameter specifies the proxmox node on which to manage the vm.
 export EXECUTE_NODE="p2"
 
 # Set VM Env
