@@ -47,7 +47,7 @@ check_env() {
   ### check vm ip
   ipstart=$(echo $VM_ip | cut -d '~' -f 1)
   ipend=$(echo $VM_ip | cut -d '~' -f 2)
-  for ((g=$idstart;g<=$idend;g++))
+  for ((g=$ipstart;g<=$ipend;g++))
   do
     ping -c 1 $VM_netid.$g &>/dev/null
     if [[ "$?" == "0" ]]; then
