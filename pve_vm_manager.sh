@@ -9,7 +9,7 @@ NC='\033[0m' # No Color
 # debug mode
 Debug() {
   ### output log
-  [[ -f /tmp/pve_execute_command.log ]] && sudo rm /tmp/pve_execute_command.log
+  [[ -f /tmp/pve_execute_command.log ]] && rm /tmp/pve_execute_command.log
   exec {BASH_XTRACEFD}>> /tmp/pve_execute_command.log
   set -x
   #set -o pipefail
@@ -164,6 +164,17 @@ delete_vm() {
   ssh root@"$EXECUTE_NODE" rm /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 && printf "${GRN}=====delete nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 completed=====${NC}\n"
 }
 
+reboot_vm() {
+  printf "${GRN}[Stage: Reboot VM]${NC}\n"
+  idstart=$(echo $VM_id | cut -d '~' -f 1)
+  idend=$(echo $VM_id | cut -d '~' -f 2)
+  for ((j=$idstart;j<=$idend;j++))
+  do
+    ssh root@"$EXECUTE_NODE" qm reboot $j &>> /tmp/pve_vm_manager.log
+    printf "${GRN}=====reboot vm $h completed=====${NC}\n"
+  done
+}
+
 help() {
   cat <<EOF
 Usage: pve_vm_manager.sh [OPTIONS]
@@ -172,6 +183,7 @@ Available options:
 
 create    create the vm based on the setenvVar parameter.
 start     start all vm.
+reboot    reboot all vm.
 stop      stop all vm.
 delete    delete all vm.
 help      display this help and exit.
@@ -187,21 +199,25 @@ if [[ "$#" < 1 ]]; then
 else
   case $1 in
     create)
-      [[ -f /tmp/pve_vm_manager.log ]] && sudo rm /tmp/pve_vm_manager.log
+      [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
       check_env
       create_vm
     ;;
     start)
-      [[ -f /tmp/pve_vm_manager.log ]] && sudo rm /tmp/pve_vm_manager.log
+      [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
       start_vm
     ;;
     stop)
-      [[ -f /tmp/pve_vm_manager.log ]] && sudo rm /tmp/pve_vm_manager.log
+      [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
       stop_vm
     ;;
     delete)
-      [[ -f /tmp/pve_vm_manager.log ]] && sudo rm /tmp/pve_vm_manager.log
+      [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
       delete_vm
+    ;;
+    reboot)
+      [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
+      reboot_vm
     ;;
     *)
       help
