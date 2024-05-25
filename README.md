@@ -32,7 +32,7 @@ export Network_device="vmbr0"
 export DISK="50"
 export STORAGE="local-lvm"
 
-# Set alpine vm default user
+# Set alpine default user
 export USER="bigred"
 export PASSWORD="bigred"
 ```
