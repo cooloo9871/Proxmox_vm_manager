@@ -31,6 +31,10 @@ export MEM="4096"
 export Network_device="vmbr0"
 export DISK="50"
 export STORAGE="local-lvm"
+
+# Set alpine vm default user
+export USER="bigred"
+export PASSWORD="bigred"
 ```
 
 ### View the script options
