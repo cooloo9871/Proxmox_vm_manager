@@ -95,6 +95,7 @@ $ bash pve_vm_manager.sh delete
 =====delete vm 601 completed=====
 =====delete vm 602 completed=====
 =====delete vm 603 completed=====
+=====delete /tmp/pve_execute_command.log success=====
 =====delete nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 completed=====
 ```
 ### Show logs
