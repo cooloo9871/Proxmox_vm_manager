@@ -45,6 +45,7 @@ start     start all vm.
 reboot    reboot all vm.
 stop      stop all vm.
 delete    delete all vm.
+logs      show last execute command log.
 help      display this help and exit.
 ```
 
@@ -95,6 +96,11 @@ $ bash pve_vm_manager.sh delete
 =====delete vm 602 completed=====
 =====delete vm 603 completed=====
 =====delete nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 completed=====
+```
+### Show logs
+```
+$ bash pve_vm_manager.sh logs
+......
 ```
 ### Login vm
 #### account/password: bigred/bigred
