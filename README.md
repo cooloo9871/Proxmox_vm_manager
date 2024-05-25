@@ -7,6 +7,9 @@ git clone https://github.com/cooloo9871/Proxmox_vm_manager.git;cd Proxmox_vm_man
 ```
 
 ### Setting the parameters
+- `VM_id` is the number of the vm, be careful not to duplicate it.
+- `VM_netid` is the network id used by the configured vm.
+- `VM_ip` is the ip address used by the configuration vm.
 ```
 $ nano setenvVar
 # Set Proxmox Cluster Env
