@@ -5,13 +5,6 @@ GRN='\033[1;32m' # notice
 YEL='\033[1;33m' # warning
 NC='\033[0m' # No Color
 
-# function#!/bin/bash
-
-RED='\033[1;31m' # alarm
-GRN='\033[1;32m' # notice
-YEL='\033[1;33m' # warning
-NC='\033[0m' # No Color
-
 # function
 # debug mode
 Debug() {
