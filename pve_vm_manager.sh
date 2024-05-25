@@ -32,7 +32,7 @@ check_env() {
     if [[ "$?" != "0" ]]; then
       printf "${RED}Must be configured to use ssh to login to the Proxmox node1 without a password.${NC}\n"
       printf "${YEL}=====Run this command: ssh-keygen -t rsa -P ''=====${NC}\n"
-      printf "${YEL}=====Run this command: ssh-copy-id root@$n=====${NC}\n"
+      printf "${YEL}=====Run this command: ssh-copy-id root@"$n"=====${NC}\n"
       exit 1
     fi
   done
@@ -138,7 +138,7 @@ start_vm() {
   for ((d=$idstart;d<=$idend;d++))
   do
     if ! ssh root@"$EXECUTE_NODE" qm list | grep "$d" &>/dev/null; then
-      printf "${RED}=====vm $d is not found=====${NC}\n"
+      printf "${RED}=====vm $d not found=====${NC}\n"
     else
       ssh root@"$EXECUTE_NODE" qm start $d &>> /tmp/pve_vm_manager.log
       printf "${GRN}=====start vm $d=====${NC}\n"
@@ -153,7 +153,7 @@ stop_vm() {
   for ((e=$idstart;e<=$idend;e++))
   do
     if ! ssh root@"$EXECUTE_NODE" qm list | grep "$e" &>/dev/null; then
-      printf "${RED}=====vm $e is not found=====${NC}\n"
+      printf "${RED}=====vm $e not found=====${NC}\n"
     else
       ssh root@"$EXECUTE_NODE" qm stop $e &>> /tmp/pve_vm_manager.log
       printf "${GRN}=====stop vm $e completed=====${NC}\n"
@@ -168,7 +168,7 @@ delete_vm() {
   for ((h=$idstart;h<=$idend;h++))
   do
     if ! ssh root@"$EXECUTE_NODE" qm list | grep "$h" &>/dev/null; then
-      printf "${RED}=====vm $h is not found=====${NC}\n"
+      printf "${RED}=====vm $h not found=====${NC}\n"
     elif ssh root@"$EXECUTE_NODE" qm list | grep "$h" | grep running &>/dev/null; then
       printf "${RED}=====stop vm $h first=====${NC}\n"
     else
@@ -186,14 +186,23 @@ reboot_vm() {
   for ((j=$idstart;j<=$idend;j++))
   do
     if ! ssh root@"$EXECUTE_NODE" qm list | grep "$j" &>/dev/null; then
-      printf "${RED}=====vm $j is not found=====${NC}\n"
+      printf "${RED}=====vm $j not found=====${NC}\n"
     elif ! ssh root@"$EXECUTE_NODE" qm list | grep "$j" | grep running &>/dev/null; then
-      printf "${RED}=====vm $j is not running=====${NC}\n"
+      printf "${RED}=====vm $j not running=====${NC}\n"
     else
       ssh root@"$EXECUTE_NODE" qm reboot $j &>> /tmp/pve_vm_manager.log
       printf "${GRN}=====reboot vm $j completed=====${NC}\n"
     fi
   done
+}
+
+log_vm() {
+  if [[ ! -f '/tmp/pve_execute_command.log' ]]; then
+    printf "${RED}=====log not found=====${NC}\n"
+    exit 1
+  else
+    cat /tmp/pve_execute_command.log
+  fi
 }
 
 help() {
@@ -207,38 +216,50 @@ start     start all vm.
 reboot    reboot all vm.
 stop      stop all vm.
 delete    delete all vm.
+logs      show last execute command log.
 help      display this help and exit.
 EOF
   exit
 }
 
-Debug
-source ./setenvVar
 
 if [[ "$#" < 1 ]]; then
   help
 else
   case $1 in
     create)
+      Debug
+      source ./setenvVar
       [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
       check_env
       create_vm
     ;;
     start)
+      Debug
+      source ./setenvVar
       [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
       start_vm
     ;;
     stop)
+      Debug
+      source ./setenvVar
       [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
       stop_vm
     ;;
     delete)
+      Debug
+      source ./setenvVar
       [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
       delete_vm
     ;;
     reboot)
+      Debug
+      source ./setenvVar
       [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
       reboot_vm
+    ;;
+    logs)
+      log_vm
     ;;
     *)
       help
