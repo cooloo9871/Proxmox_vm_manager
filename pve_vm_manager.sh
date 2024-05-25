@@ -29,7 +29,12 @@ check_env() {
   for n in ${NODE_IP[@]}
   do
     ssh -o BatchMode=yes -o "StrictHostKeyChecking no" root@"$n" '/bin/true' &> /dev/null
-    [[ "$?" != "0" ]] && printf "${RED}Must be configured to use ssh to login to the Proxmox node1 without a password.${NC}\n" && exit 1
+    if [[ "$?" != "0" ]]; then
+      printf "${RED}Must be configured to use ssh to login to the Proxmox node1 without a password.${NC}\n"
+      printf "${YEL}=====Run this command: ssh-keygen -t rsa -P ''=====${NC}\n"
+      printf "${YEL}=====Run this command: ssh-copy-id root@$n=====${NC}\n"
+      exit 1
+    fi
   done
 
   ### check ssh login to Proxmox node use hostname
