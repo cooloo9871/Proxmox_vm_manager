@@ -1,3 +1,3 @@
-# This file is used to download images to apline linux vm on home directory named images.tar.gz
+# This file is used to download the image to the alpine linux vm home directory named images.tar.gz.
 docker.io/library/nginx
 docker.io/library/alpine
