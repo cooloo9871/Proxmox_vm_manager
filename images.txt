@@ -1,0 +1,3 @@
+# This file is used to download images to apline linux vm on /opt/images.tar.gz
+docker.io/library/nginx
+docker.io/library/alpine
