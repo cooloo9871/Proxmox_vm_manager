@@ -114,7 +114,10 @@ EOF
   done
 
   scp ./user.yml root@"$EXECUTE_NODE":"/var/lib/vz/snippets/user.yml" &>> /tmp/pve_vm_manager.log
-  ssh root@"$EXECUTE_NODE" sed -i "s/ns/$NAMESERVER/g" "/var/lib/vz/snippets/user.yml" &>> /tmp/pve_vm_manager.log
+  ssh root@"$EXECUTE_NODE" sed -i "s/NS/$NAMESERVER/g" "/var/lib/vz/snippets/user.yml" &>> /tmp/pve_vm_manager.log
+  ssh root@"$EXECUTE_NODE" sed -i "s/AC/$USER/g" "/var/lib/vz/snippets/user.yml" &>> /tmp/pve_vm_manager.log
+  ssh root@"$EXECUTE_NODE" sed -i "s/PW/$PASSWORD/g" "/var/lib/vz/snippets/user.yml" &>> /tmp/pve_vm_manager.log
+
   for ((a=$idstart,b=$ipstart;a<=$idend,b<=$ipend;a++,b++))
   do
     scp ./network.yml root@"$EXECUTE_NODE":"/var/lib/vz/snippets/network$a.yml" &>> /tmp/pve_vm_manager.log
