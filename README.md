@@ -24,6 +24,17 @@ export NETMASK="255.255.255.0"
 export GATEWAY="192.168.61.2"
 export NAMESERVER="8.8.8.8"
 
+#export EXECUTE_NODE="p3"
+
+# Set VM Network Env
+# Please make sure that the vm id and vm ip is not conflicting.
+#export VM_id="604~606"
+#export VM_netid="192.168.61"
+#export VM_ip="114~116"
+#export NETMASK="255.255.255.0"
+#export GATEWAY="192.168.61.2"
+#export NAMESERVER="8.8.8.8"
+
 # Set VM Hardware Env
 export CPU_socket="2"
 export CPU_core="2"
