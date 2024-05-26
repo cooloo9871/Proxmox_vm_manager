@@ -10,6 +10,7 @@ git clone https://github.com/cooloo9871/Proxmox_vm_manager.git;cd Proxmox_vm_man
 - `VM_id` is the number of the vm, be careful not to duplicate it.
 - `VM_netid` is the network id used by the configured vm.
 - `VM_ip` is the ip address used by the configuration vm.
+  - The vm ip addresses in the following example range from 192.168.61.110 to 192.168.61.113.
 ```
 $ nano setenvVar
 # Set Proxmox Cluster Env
