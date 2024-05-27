@@ -61,7 +61,7 @@ check_env() {
   ipend=$(echo $VM_ip | cut -d '~' -f 2)
   for ((g=$ipstart;g<=$ipend;g++))
   do
-    ping -c 1 $VM_netid.$g &>/dev/null
+    ping -c 1 -W 1 $VM_netid.$g &>/dev/null
     if [[ "$?" == "0" ]]; then
       printf "${RED}=====$VM_netid.$g VM IP Already used=====${NC}\n" && exit 1
     fi
