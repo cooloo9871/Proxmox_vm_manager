@@ -67,6 +67,11 @@ check_env() {
     fi
   done
 
+  ### check ip & id the quantities
+  id_range=$((idend - idstart + 1))
+  ip_range=$((ipend - ipstart + 1))
+  [[ "$id_range" != "$ip_range" ]] && printf "${RED}=====vm id & vm ip discrepancy in quantity=====${NC}\n" && exit 1
+  
   ### check command
   ssh root@"$EXECUTE_NODE" which virt-customize >/dev/null
   if [[ ! "$?" == "0" ]]; then
