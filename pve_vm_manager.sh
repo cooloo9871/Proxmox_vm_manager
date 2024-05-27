@@ -9,6 +9,7 @@ NC='\033[0m' # No Color
 # debug mode
 Debug() {
   ### output log
+  [[ -f ~/.ssh/known_hosts ]] && rm ~/.ssh/known_hosts
   [[ -f /tmp/pve_execute_command.log ]] && rm /tmp/pve_execute_command.log
   exec {BASH_XTRACEFD}>> /tmp/pve_execute_command.log
   set -x
@@ -71,7 +72,7 @@ check_env() {
   id_range=$((idend - idstart + 1))
   ip_range=$((ipend - ipstart + 1))
   [[ "$id_range" != "$ip_range" ]] && printf "${RED}=====vm id & vm ip discrepancy in quantity=====${NC}\n" && exit 1
-  
+
   ### check command
   ssh root@"$EXECUTE_NODE" which virt-customize >/dev/null
   if [[ ! "$?" == "0" ]]; then
@@ -213,6 +214,55 @@ log_vm() {
   fi
 }
 
+dep_kind() {
+  printf "${GRN}[Stage: Deploy kind environment to the VM]${NC}\n"
+  idstart=$(echo $VM_id | cut -d '~' -f 1)
+  idend=$(echo $VM_id | cut -d '~' -f 2)
+  ipstart=$(echo $VM_ip | cut -d '~' -f 1)
+  ipend=$(echo $VM_ip | cut -d '~' -f 2)
+
+  ### check command
+  if ! which sshpass &>/dev/null; then
+    printf "${RED}=====sshpass command not found,please install on localhost=====${NC}\n"
+  exit 1
+  fi
+  for ((l=$idstart,m=$ipstart;l<=$idend,m<=$ipend;l++,m++))
+  do
+    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$l" &>/dev/null; then
+      printf "${RED}=====vm $l not found=====${NC}\n"
+    elif ! ssh root@"$EXECUTE_NODE" qm list | grep "$l" | grep running &>/dev/null; then
+      printf "${RED}=====vm $l not running=====${NC}\n"
+    else
+      sshpass -p "$PASSWORD" scp -o "StrictHostKeyChecking no" -o ConnectTimeout=5 ./alp-kind-sev.sh "$USER"@"$VM_netid.$m":/home/"$USER"/alp-kind-env.sh &>/dev/null && \
+      sshpass -p "$PASSWORD" ssh "$USER"@"$VM_netid.$m" bash /home/"$USER"/alp-kind-env.sh &>/dev/null && \
+      sshpass -p "$PASSWORD" ssh "$USER"@"$VM_netid.$m" rm /home/"$USER"/alp-kind-env.sh
+      if [[ "$?" == "0" ]]; then
+        printf "${GRN}=====deploy kind environment to the vm $l completed=====${NC}\n"
+        printf "${GRN}=====vm $l is rebooting=====${NC}\n"
+      else
+        printf "${RED}=====deploy kind environment to the vm $l fail=====${NC}\n"
+      fi
+    fi
+  done
+
+  printf "${GRN}[Stage: Snapshot the VM]${NC}\n"
+  for ((l=$idstart;l<=$idend;l++))
+  do
+    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$l" &>/dev/null; then
+      printf "${RED}=====vm $l not found=====${NC}\n"
+    elif ! ssh root@"$EXECUTE_NODE" qm list | grep "$l" | grep running &>/dev/null; then
+      printf "${RED}=====vm $l not running=====${NC}\n"
+    else
+      ssh root@"$EXECUTE_NODE" qm snapshot "$l" kind-env /tmp/pve_vm_manager.log
+      if [[ "$?" == "0" ]]; then
+        printf "${GRN}=====snapshot vm $l completed=====${NC}\n"
+      else
+        printf "${RED}=====snapshot vm $l fail=====${NC}\n"
+      fi
+    fi
+  done
+}
+
 help() {
   cat <<EOF
 Usage: pve_vm_manager.sh [OPTIONS]
@@ -225,6 +275,7 @@ reboot      reboot all vm.
 stop        stop all vm.
 delete      delete all vm.
 logs        show last execute command log.
+deploy      deploy kind k8s environment to the vm.
 help        display this help and exit.
 EOF
   exit
@@ -264,6 +315,12 @@ else
       source ./setenvVar
       [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
       reboot_vm
+    ;;
+    deploy)
+      Debug
+      source ./setenvVar
+      [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
+      dep_kind
     ;;
     logs)
       log_vm
