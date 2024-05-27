@@ -21,6 +21,11 @@ if ! which podman &>/dev/null; then
   exit 1
 fi
 
+if ! which sshpass &>/dev/null; then
+  printf "${RED}=====sshpass command not found,please install on localhost=====${NC}\n"
+exit 1
+fi
+
 while read img
 do
   sudo podman pull $img &>> /tmp/pve_vm_manager.log
