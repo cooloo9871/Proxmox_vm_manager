@@ -253,7 +253,7 @@ dep_kind() {
     elif ! ssh root@"$EXECUTE_NODE" qm list | grep "$l" | grep running &>/dev/null; then
       printf "${RED}=====vm $l not running=====${NC}\n"
     else
-      ssh root@"$EXECUTE_NODE" qm snapshot "$l" kind-env /tmp/pve_vm_manager.log
+      ssh root@"$EXECUTE_NODE" qm snapshot "$l" kind-env &>> /tmp/pve_vm_manager.log
       if [[ "$?" == "0" ]]; then
         printf "${GRN}=====snapshot vm $l completed=====${NC}\n"
       else
