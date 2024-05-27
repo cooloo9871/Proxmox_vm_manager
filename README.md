@@ -59,13 +59,14 @@ Usage: pve_vm_manager.sh [OPTIONS]
 
 Available options:
 
-create    create the vm based on the setenvVar parameter.
-start     start all vm.
-reboot    reboot all vm.
-stop      stop all vm.
-delete    delete all vm.
-logs      show last execute command log.
-help      display this help and exit.
+create      create the vm based on the setenvVar parameter.
+start       start all vm.
+reboot      reboot all vm.
+stop        stop all vm.
+delete      delete all vm.
+logs        show last execute command log.
+deploy      deploy kind k8s environment to the vm.
+help        display this help and exit.
 ```
 
 ### Create vm
