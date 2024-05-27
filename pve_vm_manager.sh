@@ -237,10 +237,10 @@ dep_kind() {
       sshpass -p "$PASSWORD" ssh "$USER"@"$VM_netid.$m" bash /home/"$USER"/alp-kind-env.sh &>/dev/null && \
       sshpass -p "$PASSWORD" ssh "$USER"@"$VM_netid.$m" rm /home/"$USER"/alp-kind-env.sh
       if [[ "$?" == "0" ]]; then
-        printf "${GRN}=====deploy kind environment to the vm $l completed=====${NC}\n"
+        printf "${GRN}=====deploy kind k8s environment to the vm $l completed=====${NC}\n"
         printf "${GRN}=====vm $l is rebooting=====${NC}\n"
       else
-        printf "${RED}=====deploy kind environment to the vm $l fail=====${NC}\n"
+        printf "${RED}=====deploy kind k8s environment to the vm $l fail=====${NC}\n"
       fi
     fi
   done
