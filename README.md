@@ -122,6 +122,17 @@ $ bash pve_vm_manager.sh delete
 ### Deploy kind k8s environment to the vm
 ```
 $ bash pve_vm_manager.sh deploy
+[Stage: Deploy kind environment to the VM]
+=====deploy kind k8s environment to the vm 600 completed=====
+=====vm 600 is rebooting=====
+=====deploy kind k8s environment to the vm 601 completed=====
+=====vm 601 is rebooting=====
+=====deploy kind k8s environment to the vm 602 completed=====
+=====vm 602 is rebooting=====
+[Stage: Snapshot the VM]
+=====snapshot vm 600 completed=====
+=====snapshot vm 601 completed=====
+=====snapshot vm 602 completed=====
 ```
 ### Show logs
 ```
