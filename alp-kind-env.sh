@@ -58,7 +58,7 @@ echo ""
   # create join k3s command
   #which kubectl &>/dev/null
   #if [ "\$?" == "0" ]; then
-  #   if [ -z "$SSH_TTY" ]; then
+  #   if [ -z "\$SSH_TTY" ]; then
   #      echo "K3S Starting, pls wait 30 sec" && sleep 30
   #      kubectl get nodes 2>/dev/null | grep master | grep `hostname` &>/dev/null
   #      if [ "\$?" == "0" ]; then
@@ -174,5 +174,114 @@ modprobe ip_tables
 EOF
 
 sudo chmod +x /etc/local.d/rc.local.start
+
+mkdir ~/bin
+
+cat <<EOF | tee ~/bin/dknet
+#!/bin/bash
+[ "\$#" != 2 ] && echo "dknet ctn net" && exit 1
+
+ifconfig \$2 &>/dev/null
+[ "\$?" != "0" ] && echo "\$2 not exist" && exit 1
+
+x=\$(docker inspect -f '{{.State.Pid}}' \$1 2>/dev/null)
+[ "\$x" == "" ] && echo "\$1 not exist" && exit 1
+
+[ ! -d /var/run/netns ] && sudo mkdir -p /var/run/netns
+
+if [ ! -f /var/run/netns/\$x ]; then
+   sudo ln -s /proc/\$x/ns/net /var/run/netns/\$x
+   sudo ip link set \$2 netns \$x
+fi
+
+exit 0
+EOF
+
+chmod +x ~/bin/dknet
+
+cat <<EOF | tee ~/bin/dktag
+#!/bin/bash
+# Returns the tags for a given docker image.
+# Based on http://stackoverflow.com/a/32622147/
+
+print_help_and_exit() {
+        name=`basename "\$0"`
+        echo "Usage:"
+        echo "  \${name} alpine"
+        echo "  \${name} phusion/baseimage"
+        exit
+}
+
+repo="\$1"
+
+[ "\$#" != 1  ] && print_help_and_exit
+[ "\$" = "-h" ] && print_help_and_exit
+[ "\$" = "-help" ] && print_help_and_exit
+[ "\$" = "--help" ] && print_help_and_exit
+
+if [[ "\${repo}" != */* ]]; then
+        repo="library/\${repo}"
+fi
+
+# v2 API does not list all tags at once, it seems to use some kind of pagination.
+#url="https://registry.hub.docker.com/v2/repositories/\${repo}/tags/"
+##echo "\${url}"
+#curl -s -S "\${url}" | jq '."results"[]["name"]' | sort
+
+# v1 API lists everything in a single request.
+url="https://registry.hub.docker.com/v1/repositories/\${repo}/tags"
+#echo "\${url}"
+curl -s -S "\${url}" | jq '.[]["name"]' | sed 's/^"\(.*\)"\$/\1/' | sort
+EOF
+
+chmod +x ~/bin/dktag
+
+cat <<EOF | tee ~/bin/k3smaster
+#!/bin/bash
+
+which kubectl &>/dev/null
+if [ "\$?" != "0" ]; then
+   echo -n "K3S Master creating"
+   curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--cluster-cidr=10.20.0.0/16 --service-cidr=172.20.0.0/24 --no-deploy servicelb --no-deploy traefik --cluster-domain=dt.io" K3S_KUBECONFIG_MODE="644" sh -
+   sudo reboot
+fi
+EOF
+
+chmod +x ~/bin/k3smaster
+
+cat <<EOF | tee ~/bin/pingnid
+#!/bin/bash
+
+[ "\$1" == "" ] && echo "need a network id" && exit
+netid=\$1
+
+# 安裝 fping 命令
+fping -v &>/dev/null
+if [ "\$?" != "0" ];then
+   sudo apk add fping &>/dev/null
+   [ "\$?" != "0" ] && echo "fping not found" && exit 1
+   echo "fping ok"
+fi
+
+fping -c 1 -g -q \$netid &> "/tmp/netid.chk"
+nip=\$(grep "min/avg/max" "/tmp/netid.chk" | cut -d' ' -f1 | tr -s ' ')
+
+for ip in \$nip
+do
+  echo -n "\$ip "
+
+  nc -w 2 \$ip 22 &>/dev/null
+  [ "\$?" == "0" ] && echo -n "ssh "
+
+  nc -w 2 \$ip 80 &>/dev/null
+  [ "\$?" == "0" ] && echo -n "www "
+
+  nc -w 2 \$ip 445 &>/dev/null
+  [ "\$?" == "0" ] && echo -n "smb"
+
+  echo ""
+done
+
+chmod +x ~/bin/pingnid
 
 sudo reboot
