@@ -148,7 +148,7 @@ start_vm() {
       printf "${RED}=====vm $d not found=====${NC}\n"
     else
       ssh root@"$EXECUTE_NODE" qm start $d &>> /tmp/pve_vm_manager.log
-      sleep 2
+      sleep 10
       printf "${GRN}=====start vm $d=====${NC}\n"
     fi
   done
