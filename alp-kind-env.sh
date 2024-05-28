@@ -150,7 +150,7 @@ m=\$(df -h | grep /dev/sda)
 ds=\$(echo \$m | cut -d ' ' -f2)
 echo "Disk : \$ds" >> /tmp/sinfo
 
-which kubectl &>/dev/null
+which kubectl get no &>/dev/null
 if [ "\$?" == "0" ]; then
    #v=\$(kubectl version --short | head -n 1 | cut -d ":" -f2 | tr -d ' ')
    echo "Kubernetes: enabled" >> /tmp/sinfo
