@@ -119,6 +119,10 @@ $ bash pve_vm_manager.sh delete
 =====delete /tmp/pve_vm_manager.log completed=====
 =====delete nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 completed=====
 ```
+### Deploy kind k8s environment to the vm
+```
+$ bash pve_vm_manager.sh deploy
+```
 ### Show logs
 ```
 $ bash pve_vm_manager.sh logs
