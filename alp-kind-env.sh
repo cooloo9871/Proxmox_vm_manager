@@ -171,6 +171,10 @@ modprobe fuse
 mount --make-rshared /
 modprobe br_netfilter
 modprobe ip_tables
+modprobe ip_vs
+modprobe ip_vs_rr
+modprobe ip_vs_wrr
+modprobe ip_vs_sh
 EOF
 
 sudo chmod +x /etc/local.d/rc.local.start
