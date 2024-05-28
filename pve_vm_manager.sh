@@ -216,7 +216,7 @@ log_vm() {
 }
 
 dep_kind() {
-  printf "${GRN}[Stage: Deploy kind environment to the VM]${NC}\n"
+  printf "${GRN}[Stage: Deploy kind k8s environment to the VM]${NC}\n"
   idstart=$(echo $VM_id | cut -d '~' -f 1)
   idend=$(echo $VM_id | cut -d '~' -f 2)
   ipstart=$(echo $VM_ip | cut -d '~' -f 1)
