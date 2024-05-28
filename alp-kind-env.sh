@@ -130,7 +130,7 @@ cat <<EOF | sudo tee /etc/local.d/rc.local.start
 gw=\$(route -n | grep -e "^0.0.0.0 ")
 export GWIF=\${gw##* }
 ips=\$(ifconfig \$GWIF | grep 'inet ')
-export IP=$\(echo \$ips | cut -d' ' -f2 | cut -d':' -f2)
+export IP=\$(echo \$ips | cut -d' ' -f2 | cut -d':' -f2)
 export NETID=\${IP%.*}
 export GW=\$(route -n | grep -e '^0.0.0.0' | tr -s \ - | cut -d ' ' -f2)
 
