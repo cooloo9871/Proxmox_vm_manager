@@ -42,25 +42,25 @@ ips=\$(ifconfig $GWIF | grep 'inet ')
 export IP=\$(echo $ips | cut -d' ' -f2 | cut -d':' -f2)
 export NETID=\${IP%.*}
 export GW=\$(route -n | grep -e '^0.0.0.0' | tr -s \ - | cut -d ' ' -f2)
-export PATH="/home/bigred/bin:/home/bigred/vmalpdt/bin:$PATH"
+export PATH="/home/bigred/bin:/home/bigred/vmalpdt/bin:\$PATH"
 # source /home/bigred/bin/myk3s
 clear && sleep 2
 echo "Welcome to Alpine Linux : `cat /etc/alpine-release`"
-[ "$IP" != "" ] && echo "IP : $IP"
+[ "\$IP" != "" ] && echo "IP : \$IP"
 echo ""
 
-#if [ "$USER" == "bigred" ]; then
+#if [ "\$USER" == "bigred" ]; then
   # change hostname & set IP
   # sudo /home/bigred/bin/chnameip
 
   # create join k3s command
   #which kubectl &>/dev/null
-  #if [ "$?" == "0" ]; then
+  #if [ "\$?" == "0" ]; then
   #   if [ -z "$SSH_TTY" ]; then
   #      echo "K3S Starting, pls wait 30 sec" && sleep 30
   #      kubectl get nodes 2>/dev/null | grep master | grep `hostname` &>/dev/null
-  #      if [ "$?" == "0" ]; then
-  #         echo "sudo curl -sfL https://get.k3s.io | K3S_URL=https://$IP:6443 K3S_TOKEN=`sudo cat /var/lib/rancher/k3s/server/node-token` K3S_KUBECONFIG_MODE='644' sh - && sudo reboot" > /home/bigred/bin/joink3s
+  #      if [ "\$?" == "0" ]; then
+  #         echo "sudo curl -sfL https://get.k3s.io | K3S_URL=https://\$IP:6443 K3S_TOKEN=`sudo cat /var/lib/rancher/k3s/server/node-token` K3S_KUBECONFIG_MODE='644' sh - && sudo reboot" > /home/bigred/bin/joink3s
   #         chmod +x /home/bigred/bin/joink3s
   #      fi
   #   fi
@@ -84,21 +84,21 @@ alias pc='sudo podman system prune -a -f'
 [ -f /home/bigred/dt/alpine.bash ] && source /home/bigred/dt/alpine.bash
 
 # /etc/local.d/rc.local.start (相當於 rc.local) create /tmp/sinfo
-if [ -z "$SSH_TTY" ]; then
+if [ -z "\$SSH_TTY" ]; then
    [ -f /tmp/sinfo ] && dialog --title " Cloud Native Trainer " --textbox /tmp/sinfo 24 85; clear
 fi
 
 docker ps -a | grep -e "Up.*c27" &>/dev/null
-[ "$?" == "0" ] && export c27="true" && echo "c27 Up"
+[ "\$?" == "0" ] && export c27="true" && echo "c27 Up"
 
 docker ps -a | grep -e "Up.*c24" &>/dev/null
-[ "$?" == "0" ] && export c24="true" && echo "c24 Up"
+[ "\$?" == "0" ] && export c24="true" && echo "c24 Up"
 
 docker ps -a | grep -e "Up.*c28" &>/dev/null
-[ "$?" == "0" ] && export c28="true" && echo "c28 Up"
+[ "\$?" == "0" ] && export c28="true" && echo "c28 Up"
 
 docker ps -a | grep -e "Up.*c29" &>/dev/null
-[ "$?" == "0" ] && export c29="true" && echo "c29 Up"
+[ "\$?" == "0" ] && export c29="true" && echo "c29 Up"
 
 export KIND_EXPERIMENTAL_PROVIDER='podman kind create cluster'
 export C24=\$(docker ps -a | grep -o -e "c24-[a-z]*[-]*[a-z]*" | tr '\n' ' ')
@@ -137,7 +137,7 @@ export GW=\$(route -n | grep -e '^0.0.0.0' | tr -s \ - | cut -d ' ' -f2)
 echo "[System]" > /tmp/sinfo
 echo "Hostname : `hostname`" >> /tmp/sinfo
 
-m=$(free -mh | grep Mem: | tr -s ' ' | cut -d' ' -f2)
+m=\$(free -mh | grep Mem: | tr -s ' ' | cut -d' ' -f2)
 echo "Memory : \${m}M" >> /tmp/sinfo
 
 cname=\$(cat /proc/cpuinfo | grep 'model name' | head -n 1 | cut -d ':' -f2)
@@ -149,7 +149,7 @@ ds=\$(echo \$m | cut -d ' ' -f2)
 echo "Disk : \$ds" >> /tmp/sinfo
 
 which kubectl &>/dev/null
-if [ "$?" == "0" ]; then
+if [ "\$?" == "0" ]; then
    #v=\$(kubectl version --short | head -n 1 | cut -d ":" -f2 | tr -d ' ')
    echo "Kubernetes: enabled" >> /tmp/sinfo
 fi
@@ -162,7 +162,7 @@ echo "Gateway : \$GW" >> /tmp/sinfo
 cat /etc/resolv.conf | grep 'nameserver' | head -n 1 >> /tmp/sinfo
 
 /bin/ping -c 1 www.hinet.net
-[ "$?" == "0" ] && echo "Internet OK" >> /tmp/sinfo
+[ "\$?" == "0" ] && echo "Internet OK" >> /tmp/sinfo
 
 modprobe tun
 modprobe fuse
