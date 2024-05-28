@@ -23,7 +23,7 @@ fi
 
 if ! which sshpass &>/dev/null; then
   printf "${RED}=====sshpass command not found,please install on localhost=====${NC}\n"
-exit 1
+  exit 1
 fi
 
 while read img
