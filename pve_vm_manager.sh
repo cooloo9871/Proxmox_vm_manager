@@ -234,8 +234,8 @@ dep_kind() {
     elif ! ssh root@"$EXECUTE_NODE" qm list | grep "$l" | grep running &>/dev/null; then
       printf "${RED}=====vm $l not running=====${NC}\n"
     else
-      sshpass -p "$PASSWORD" scp -o "StrictHostKeyChecking no" -o ConnectTimeout=5 ./alp-kind-env.sh "$USER"@"$VM_netid.$m":/home/"$USER"/alp-kind-env.sh &>/dev/null && \
-      sshpass -p "$PASSWORD" ssh "$USER"@"$VM_netid.$m" bash /home/"$USER"/alp-kind-env.sh &>/dev/null && \
+      sshpass -p "$PASSWORD" scp -o "StrictHostKeyChecking no" -o ConnectTimeout=5 ./alp-kind-env.sh "$USER"@"$VM_netid.$m":/home/"$USER"/alp-kind-env.sh &>> /tmp/pve_vm_manager.log && \
+      sshpass -p "$PASSWORD" ssh "$USER"@"$VM_netid.$m" bash /home/"$USER"/alp-kind-env.sh &>> /tmp/pve_vm_manager.log && \
       sshpass -p "$PASSWORD" ssh "$USER"@"$VM_netid.$m" rm /home/"$USER"/alp-kind-env.sh
       if [[ "$?" == "0" ]]; then
         printf "${GRN}=====deploy kind k8s environment to the vm $l completed=====${NC}\n"
