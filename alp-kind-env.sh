@@ -285,6 +285,7 @@ do
 
   echo ""
 done
+EOF
 
 chmod +x ~/bin/pingnid
 
