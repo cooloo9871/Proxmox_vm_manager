@@ -36,12 +36,12 @@ for script in /etc/profile.d/*.sh ; do
 done
 
 # Alpine 的啟動系統是 openrc, 登入前會執行 /etc/local.d/rc.local.start, 登入後會執行 /etc/profile
-gw=$(route -n | grep -e "^0.0.0.0 ")
-export GWIF=${gw##* }
-ips=$(ifconfig $GWIF | grep 'inet ')
-export IP=$(echo $ips | cut -d' ' -f2 | cut -d':' -f2)
-export NETID=${IP%.*}
-export GW=$(route -n | grep -e '^0.0.0.0' | tr -s \ - | cut -d ' ' -f2)
+gw=\$(route -n | grep -e "^0.0.0.0 ")
+export GWIF=\${gw##* }
+ips=\$(ifconfig $GWIF | grep 'inet ')
+export IP=\$(echo $ips | cut -d' ' -f2 | cut -d':' -f2)
+export NETID=\${IP%.*}
+export GW=\$(route -n | grep -e '^0.0.0.0' | tr -s \ - | cut -d ' ' -f2)
 export PATH="/home/bigred/bin:/home/bigred/vmalpdt/bin:$PATH"
 # source /home/bigred/bin/myk3s
 clear && sleep 2
@@ -101,64 +101,64 @@ docker ps -a | grep -e "Up.*c29" &>/dev/null
 [ "$?" == "0" ] && export c29="true" && echo "c29 Up"
 
 export KIND_EXPERIMENTAL_PROVIDER='podman kind create cluster'
-export C24=$(docker ps -a | grep -o -e "c24-[a-z]*[-]*[a-z]*" | tr '\n' ' ')
-export C27=$(docker ps -a | grep -o -e "c27-[a-z]*[-]*[a-z]*[1-9]*" | tr '\n' ' ')
-export C28=$(docker ps -a | grep -o -e "c28-[a-z]*[-]*[a-z]*" | tr '\n' ' ')
-export C29=$(docker ps -a | grep -o -e "c29-[a-z]*[-]*[a-z]*[1-9]*" | tr '\n' ' ')
+export C24=\$(docker ps -a | grep -o -e "c24-[a-z]*[-]*[a-z]*" | tr '\n' ' ')
+export C27=\$(docker ps -a | grep -o -e "c27-[a-z]*[-]*[a-z]*[1-9]*" | tr '\n' ' ')
+export C28=\$(docker ps -a | grep -o -e "c28-[a-z]*[-]*[a-z]*" | tr '\n' ' ')
+export C29=\$(docker ps -a | grep -o -e "c29-[a-z]*[-]*[a-z]*[1-9]*" | tr '\n' ' ')
 
-alias c24gm='([ "$c24" != "true" ] && [ "$c27" != "true" ]) && docker start $C24 && c24="true"'
-alias c24gn='[ "$c24" == "true" ] && docker stop $C24 && c24=""'
-alias c27gm='([ "$c24" != "true" ] && [ "$c27" != "true" ]) && docker start $C27 && c27="true"'
-alias c27gn='[ "$c27" == "true" ] && docker stop $C27 && c27=""'
-alias c27adm='[ "$c27" == "true" ] && docker exec -it c27-control-plane bash'
-alias c24adm='[ "$c24" == "true" ] && docker exec -it c24-control-plane bash'
+alias c24gm='([ "\$c24" != "true" ] && [ "\$c27" != "true" ]) && docker start \$C24 && c24="true"'
+alias c24gn='[ "\$c24" == "true" ] && docker stop \$C24 && c24=""'
+alias c27gm='([ "\$c24" != "true" ] && [ "\$c27" != "true" ]) && docker start \$C27 && c27="true"'
+alias c27gn='[ "\$c27" == "true" ] && docker stop \$C27 && c27=""'
+alias c27adm='[ "\$c27" == "true" ] && docker exec -it c27-control-plane bash'
+alias c24adm='[ "\$c24" == "true" ] && docker exec -it c24-control-plane bash'
 
-alias c28gm='([ "$c28" != "true" ] && [ "$c29" != "true" ]) && docker start $C28 && c28="true"'
-alias c28gn='[ "$c28" == "true" ] && docker stop $C28 && c28=""'
-alias c29gm='([ "$c28" != "true" ] && [ "$c29" != "true" ]) && docker start $C29 && c29="true"'
-alias c29gn='[ "$c29" == "true" ] && docker stop $C29 && c29=""'
-alias c29adm='[ "$c29" == "true" ] && docker exec -it c29-control-plane bash'
-alias c28adm='[ "$c28" == "true" ] && docker exec -it c28-control-plane bash'
+alias c28gm='([ "\$c28" != "true" ] && [ "\$c29" != "true" ]) && docker start \$C28 && c28="true"'
+alias c28gn='[ "\$c28" == "true" ] && docker stop \$C28 && c28=""'
+alias c29gm='([ "\$c28" != "true" ] && [ "\$c29" != "true" ]) && docker start \$C29 && c29="true"'
+alias c29gn='[ "\$c29" == "true" ] && docker stop \$C29 && c29=""'
+alias c29adm='[ "\$c29" == "true" ] && docker exec -it c29-control-plane bash'
+alias c28adm='[ "\$c28" == "true" ] && docker exec -it c28-control-plane bash'
 
-alias kup='([ "$c28" == "true" ] && echo "c28 Up") || ([ "$c29" == "true" ] && echo "c29 Up")'
+alias kup='([ "\$c28" == "true" ] && echo "c28 Up") || ([ "\$c29" == "true" ] && echo "c29 Up")'
 
 alias vms='sudo /usr/bin/vmware-toolbox-cmd disk shrink /'
 EOF
 
 cat <<EOF | sudo tee /etc/local.d/rc.local.start
 #!/bin/bash
-gw=$(route -n | grep -e "^0.0.0.0 ")
-export GWIF=${gw##* }
-ips=$(ifconfig $GWIF | grep 'inet ')
-export IP=$(echo $ips | cut -d' ' -f2 | cut -d':' -f2)
-export NETID=${IP%.*}
-export GW=$(route -n | grep -e '^0.0.0.0' | tr -s \ - | cut -d ' ' -f2)
+gw=\$(route -n | grep -e "^0.0.0.0 ")
+export GWIF=\${gw##* }
+ips=\$(ifconfig $GWIF | grep 'inet ')
+export IP=$\(echo $ips | cut -d' ' -f2 | cut -d':' -f2)
+export NETID=\${IP%.*}
+export GW=\$(route -n | grep -e '^0.0.0.0' | tr -s \ - | cut -d ' ' -f2)
 
 echo "[System]" > /tmp/sinfo
 echo "Hostname : `hostname`" >> /tmp/sinfo
 
 m=$(free -mh | grep Mem: | tr -s ' ' | cut -d' ' -f2)
-echo "Memory : ${m}M" >> /tmp/sinfo
+echo "Memory : \${m}M" >> /tmp/sinfo
 
-cname=$(cat /proc/cpuinfo | grep 'model name' | head -n 1 | cut -d ':' -f2)
-cnumber=$(cat /proc/cpuinfo | grep 'model name' | wc -l)
-echo "CPU : $cname (core: $cnumber)" >> /tmp/sinfo
+cname=\$(cat /proc/cpuinfo | grep 'model name' | head -n 1 | cut -d ':' -f2)
+cnumber=\$(cat /proc/cpuinfo | grep 'model name' | wc -l)
+echo "CPU : \$cname (core: \$cnumber)" >> /tmp/sinfo
 
-m=$(df -h | grep /dev/sda)
-ds=$(echo $m | cut -d ' ' -f2)
-echo "Disk : $ds" >> /tmp/sinfo
+m=\$(df -h | grep /dev/sda)
+ds=\$(echo \$m | cut -d ' ' -f2)
+echo "Disk : \$ds" >> /tmp/sinfo
 
 which kubectl &>/dev/null
 if [ "$?" == "0" ]; then
-   #v=$(kubectl version --short | head -n 1 | cut -d ":" -f2 | tr -d ' ')
+   #v=\$(kubectl version --short | head -n 1 | cut -d ":" -f2 | tr -d ' ')
    echo "Kubernetes: enabled" >> /tmp/sinfo
 fi
 
 echo "" >> /tmp/sinfo
 
 echo "[Network]" >> /tmp/sinfo
-echo "IP : $IP" >> /tmp/sinfo
-echo "Gateway : $GW" >> /tmp/sinfo
+echo "IP : \$IP" >> /tmp/sinfo
+echo "Gateway : \$GW" >> /tmp/sinfo
 cat /etc/resolv.conf | grep 'nameserver' | head -n 1 >> /tmp/sinfo
 
 /bin/ping -c 1 www.hinet.net
