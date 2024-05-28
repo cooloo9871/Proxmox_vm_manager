@@ -297,7 +297,7 @@ cat <<EOF | sudo tee /etc/inittab
 ::wait:/sbin/openrc default
 
 # Set up a couple of getty's
-tty1::respawn:/sbin/agetty --autologin \$USER --noclear 38400 tty1
+tty1::respawn:/sbin/agetty --autologin $USER --noclear 38400 tty1
 tty2::respawn:/sbin/getty 38400 tty2
 tty3::respawn:/sbin/getty 38400 tty3
 tty4::respawn:/sbin/getty 38400 tty4
@@ -313,7 +313,7 @@ tty6::respawn:/sbin/getty 38400 tty6
 # Stuff to do before rebooting
 ::shutdown:/sbin/openrc shutdown
 
-ttyS0::respawn:/bin/login -f \$USER
+ttyS0::respawn:/bin/login -f $USER
 EOF
 
 sudo reboot
