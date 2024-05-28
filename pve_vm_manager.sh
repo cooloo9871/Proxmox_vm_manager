@@ -227,6 +227,13 @@ dep_kind() {
     printf "${RED}=====sshpass command not found,please install on localhost=====${NC}\n"
   exit 1
   fi
+
+  ### check alp-kind-env.sh file
+  if [[ -f ./alp-kind-env.sh ]]; then
+    printf "${RED}=====alp-kind-env.sh file not found=====${NC}\n"
+    exit 1
+  fi
+  
   for ((l=$idstart,m=$ipstart;l<=$idend,m<=$ipend;l++,m++))
   do
     if ! ssh root@"$EXECUTE_NODE" qm list | grep "$l" &>/dev/null; then
