@@ -146,7 +146,7 @@ start_vm() {
   idend=$(echo $VM_id | cut -d '~' -f 2)
   for ((d=$idstart;d<=$idend;d++))
   do
-    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$d" &>/dev/null; then
+    if ! ssh -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list | grep "$d" &>/dev/null; then
       printf "${RED}=====vm $d not found=====${NC}\n"
     else
       ssh root@"$EXECUTE_NODE" qm start "$d" &>> /tmp/pve_vm_manager.log
@@ -162,7 +162,7 @@ stop_vm() {
   idend=$(echo $VM_id | cut -d '~' -f 2)
   for ((e=$idstart;e<=$idend;e++))
   do
-    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$e" &>/dev/null; then
+    if ! ssh -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list | grep "$e" &>/dev/null; then
       printf "${RED}=====vm $e not found=====${NC}\n"
     else
       ssh root@"$EXECUTE_NODE" qm stop "$e" &>> /tmp/pve_vm_manager.log
@@ -177,7 +177,7 @@ delete_vm() {
   idend=$(echo $VM_id | cut -d '~' -f 2)
   for ((h=$idstart;h<=$idend;h++))
   do
-    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$h" &>/dev/null; then
+    if ! ssh -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list | grep "$h" &>/dev/null; then
       printf "${RED}=====vm $h not found=====${NC}\n"
     elif ssh root@"$EXECUTE_NODE" qm list | grep "$h" | grep running &>/dev/null; then
       printf "${RED}=====stop vm $h first=====${NC}\n"
@@ -197,7 +197,7 @@ reboot_vm() {
   idend=$(echo $VM_id | cut -d '~' -f 2)
   for ((j=$idstart;j<=$idend;j++))
   do
-    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$j" &>/dev/null; then
+    if ! ssh -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list | grep "$j" &>/dev/null; then
       printf "${RED}=====vm $j not found=====${NC}\n"
     elif ! ssh root@"$EXECUTE_NODE" qm list | grep "$j" | grep running &>/dev/null; then
       printf "${RED}=====vm $j not running=====${NC}\n"
@@ -238,7 +238,7 @@ dep_kind() {
 
   for ((l=$idstart,m=$ipstart;l<=$idend,m<=$ipend;l++,m++))
   do
-    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$l" &>/dev/null; then
+    if ! ssh -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list | grep "$l" &>/dev/null; then
       printf "${RED}=====vm $l not found=====${NC}\n"
     elif ! ssh root@"$EXECUTE_NODE" qm list | grep "$l" | grep running &>/dev/null; then
       printf "${RED}=====vm $l not running=====${NC}\n"
@@ -279,7 +279,7 @@ snapshot_vm() {
   idend=$(echo $VM_id | cut -d '~' -f 2)
   for ((n=$idstart;n<=$idend;n++))
   do
-    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$n" &>/dev/null; then
+    if ! ssh -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list | grep "$n" &>/dev/null; then
       printf "${RED}=====vm $n not found=====${NC}\n"
     else
       ssh root@"$EXECUTE_NODE" qm snapshot "$n" snapshot-"$(date +"%Y-%m-%d_%H-%M-%S")" &>> /tmp/pve_vm_manager.log
