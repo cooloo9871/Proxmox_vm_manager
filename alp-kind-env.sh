@@ -289,6 +289,8 @@ EOF
 
 chmod +x ~/bin/pingnid
 
+wget https://raw.githubusercontent.com/braveantony/bash-script/main/kind/kindctl -O ~/bin/kindctl && chmod +x ~/bin/kindctl
+
 cat <<EOF | sudo tee /etc/inittab
 # /etc/inittab
 
