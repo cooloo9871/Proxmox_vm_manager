@@ -59,14 +59,15 @@ Usage: pve_vm_manager.sh [OPTIONS]
 
 Available options:
 
-create      create the vm based on the setenvVar parameter.
-start       start all vm.
-reboot      reboot all vm.
-stop        stop all vm.
-delete      delete all vm.
-logs        show last execute command log.
-deploy      deploy kind k8s environment to the vm.
-help        display this help and exit.
+create        create the vm based on the setenvVar parameter.
+start         start all vm.
+reboot        reboot all vm.
+stop          stop all vm.
+delete        delete all vm.
+logs          show last execute command log.
+deploy        deploy kind k8s environment to the vm.
+snapshot      snapshot all vm.
+help          display this help and exit.
 ```
 
 ### Create vm
@@ -130,6 +131,14 @@ $ bash pve_vm_manager.sh deploy
 =====deploy kind k8s environment to the vm 602 completed=====
 =====vm 602 is rebooting=====
 [Stage: Snapshot the VM]
+=====snapshot vm 600 completed=====
+=====snapshot vm 601 completed=====
+=====snapshot vm 602 completed=====
+```
+### Snapshot
+```
+$ bash pve_vm_manager.sh snapshot
+[Stage: Snapshot VM]
 =====snapshot vm 600 completed=====
 =====snapshot vm 601 completed=====
 =====snapshot vm 602 completed=====
