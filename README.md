@@ -135,7 +135,7 @@ $ bash pve_vm_manager.sh deploy
 =====snapshot vm 601 completed=====
 =====snapshot vm 602 completed=====
 ```
-### Snapshot
+### Snapshot vm
 ```
 $ bash pve_vm_manager.sh snapshot
 [Stage: Snapshot VM]
