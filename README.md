@@ -51,7 +51,9 @@ export STORAGE="local-lvm"
 export USER="bigred"
 export PASSWORD="bigred"
 ```
-
+### Notice
+1. Before you start, please set up `/etc/hosts` in your localhost to be able to resolve to the proxmox node by hostname.
+2. Must be configured to use ssh to login to the Proxmox node without a password.
 ### View the script options
 ```
 $ bash pve_vm_manager.sh help
