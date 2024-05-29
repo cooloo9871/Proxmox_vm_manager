@@ -130,10 +130,13 @@ $ bash pve_vm_manager.sh deploy
 =====vm 601 is rebooting=====
 =====deploy kind k8s environment to the vm 602 completed=====
 =====vm 602 is rebooting=====
+=====deploy kind k8s environment to the vm 603 completed=====
+=====vm 603 is rebooting=====
 [Stage: Snapshot the VM]
 =====snapshot vm 600 completed=====
 =====snapshot vm 601 completed=====
 =====snapshot vm 602 completed=====
+=====snapshot vm 603 completed=====
 ```
 ### Snapshot vm
 ```
@@ -142,6 +145,7 @@ $ bash pve_vm_manager.sh snapshot
 =====snapshot vm 600 completed=====
 =====snapshot vm 601 completed=====
 =====snapshot vm 602 completed=====
+=====snapshot vm 603 completed=====
 ```
 ### Show logs
 ```
