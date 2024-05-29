@@ -29,7 +29,7 @@ check_env() {
   ### check ssh login to Proxmox node without password
   for n in ${NODE_IP[@]}
   do
-    ssh -o BatchMode=yes -o "StrictHostKeyChecking no" root@"$n" '/bin/true' &> /dev/null
+    ssh -q -o BatchMode=yes -o "StrictHostKeyChecking no" root@"$n" '/bin/true' &> /dev/null
     if [[ "$?" != "0" ]]; then
       printf "${RED}Must be configured to use ssh to login to the Proxmox node1 without a password.${NC}\n"
       printf "${YEL}=====Run this command: ssh-keygen -t rsa -P ''=====${NC}\n"
@@ -41,7 +41,7 @@ check_env() {
   ### check ssh login to Proxmox node use hostname
   for i in ${NODE_HOSTNAME[@]}
   do
-    ssh -o BatchMode=yes -o "StrictHostKeyChecking no" root@"$i" '/bin/true' &> /dev/null
+    ssh -q -o BatchMode=yes -o "StrictHostKeyChecking no" root@"$i" '/bin/true' &> /dev/null
     [[ "$?" != "0" ]] && printf "${RED}Must be configured to use hostname to ssh login to the Proxmox $i.${NC}\n" && exit 1
   done
 
@@ -52,7 +52,7 @@ check_env() {
   do
     for c in ${NODE_HOSTNAME[@]}
     do
-      ssh root@"$c" qm list | awk '{print $1}' | grep -v VMID | grep "$f" &>/dev/null
+      ssh -q root@"$c" qm list | awk '{print $1}' | grep -v VMID | grep "$f" &>/dev/null
       if [[ "$?" == "0" ]]; then
         printf "${RED}=====$f VM ID Already used=====${NC}\n" && exit 1
       fi
@@ -76,7 +76,7 @@ check_env() {
   [[ "$id_range" != "$ip_range" ]] && printf "${RED}=====vm id & vm ip discrepancy in quantity=====${NC}\n" && exit 1
 
   ### check command
-  ssh root@"$EXECUTE_NODE" which virt-customize >/dev/null
+  ssh -q root@"$EXECUTE_NODE" which virt-customize >/dev/null
   if [[ ! "$?" == "0" ]]; then
     printf "${RED}=====Please install virt-customize on $EXECUTE_NODE=====${NC}\n"
     printf "${YEL}=====Run this command on $EXECUTE_NODE: sudo apt install -y libguestfs-tools=====${NC}\n"
