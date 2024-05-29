@@ -48,13 +48,15 @@ check_env() {
   ### check vm id
   idstart=$(echo $VM_id | cut -d '~' -f 1)
   idend=$(echo $VM_id | cut -d '~' -f 2)
-  used=$(ssh root@"$EXECUTE_NODE" qm list | awk '{print $1}' | grep -v VMID)
   for ((f=$idstart;f<=$idend;f++))
   do
-    echo "$used" | grep "$f" &>/dev/null
-    if [[ "$?" == "0" ]]; then
-      printf "${RED}=====$f VM ID Already used=====${NC}\n" && exit 1
-    fi
+    for c in ${NODE_HOSTNAME[@]}
+    do
+      ssh root@"$c" qm list | awk '{print $1}' | grep -v VMID | grep "$f" &>/dev/null
+      if [[ "$?" == "0" ]]; then
+        printf "${RED}=====$f VM ID Already used=====${NC}\n" && exit 1
+      fi
+    done
   done
 
   ### check vm ip
@@ -133,7 +135,7 @@ EOF
 
   for ((c=$idstart;c<=$idend;c++))
   do
-    ssh root@"$EXECUTE_NODE" qm set $c --cicustom "user=local:snippets/user.yml,network=local:snippets/network$c.yml" &>> /tmp/pve_vm_manager.log
+    ssh root@"$EXECUTE_NODE" qm set "$c" --cicustom "user=local:snippets/user.yml,network=local:snippets/network$c.yml" &>> /tmp/pve_vm_manager.log
     printf "${GRN}=====create vm $c success=====${NC}\n"
   done
 }
@@ -147,7 +149,7 @@ start_vm() {
     if ! ssh root@"$EXECUTE_NODE" qm list | grep "$d" &>/dev/null; then
       printf "${RED}=====vm $d not found=====${NC}\n"
     else
-      ssh root@"$EXECUTE_NODE" qm start $d &>> /tmp/pve_vm_manager.log
+      ssh root@"$EXECUTE_NODE" qm start "$d" &>> /tmp/pve_vm_manager.log
       sleep 10
       printf "${GRN}=====start vm $d=====${NC}\n"
     fi
@@ -163,7 +165,7 @@ stop_vm() {
     if ! ssh root@"$EXECUTE_NODE" qm list | grep "$e" &>/dev/null; then
       printf "${RED}=====vm $e not found=====${NC}\n"
     else
-      ssh root@"$EXECUTE_NODE" qm stop $e &>> /tmp/pve_vm_manager.log
+      ssh root@"$EXECUTE_NODE" qm stop "$e" &>> /tmp/pve_vm_manager.log
       printf "${GRN}=====stop vm $e completed=====${NC}\n"
     fi
   done
@@ -180,7 +182,7 @@ delete_vm() {
     elif ssh root@"$EXECUTE_NODE" qm list | grep "$h" | grep running &>/dev/null; then
       printf "${RED}=====stop vm $h first=====${NC}\n"
     else
-      ssh root@"$EXECUTE_NODE" qm destroy $h &>> /tmp/pve_vm_manager.log
+      ssh root@"$EXECUTE_NODE" qm destroy "$h" &>> /tmp/pve_vm_manager.log
       printf "${GRN}=====delete vm $h completed=====${NC}\n"
     fi
   done
@@ -200,7 +202,7 @@ reboot_vm() {
     elif ! ssh root@"$EXECUTE_NODE" qm list | grep "$j" | grep running &>/dev/null; then
       printf "${RED}=====vm $j not running=====${NC}\n"
     else
-      ssh root@"$EXECUTE_NODE" qm reboot $j &>> /tmp/pve_vm_manager.log
+      ssh root@"$EXECUTE_NODE" qm reboot "$j" &>> /tmp/pve_vm_manager.log
       printf "${GRN}=====reboot vm $j completed=====${NC}\n"
     fi
   done
@@ -229,11 +231,11 @@ dep_kind() {
   fi
 
   ### check alp-kind-env.sh file
-  if [[ -f ./alp-kind-env.sh ]]; then
+  if [[ ! -f ./alp-kind-env.sh ]]; then
     printf "${RED}=====alp-kind-env.sh file not found=====${NC}\n"
     exit 1
   fi
-  
+
   for ((l=$idstart,m=$ipstart;l<=$idend,m<=$ipend;l++,m++))
   do
     if ! ssh root@"$EXECUTE_NODE" qm list | grep "$l" &>/dev/null; then
@@ -261,12 +263,27 @@ dep_kind() {
     elif ! ssh root@"$EXECUTE_NODE" qm list | grep "$l" | grep running &>/dev/null; then
       printf "${RED}=====vm $l not running=====${NC}\n"
     else
-      ssh root@"$EXECUTE_NODE" qm snapshot "$l" kind-env &>> /tmp/pve_vm_manager.log
+      ssh root@"$EXECUTE_NODE" qm snapshot "$l" kindenv-first-snapshot &>> /tmp/pve_vm_manager.log
       if [[ "$?" == "0" ]]; then
         printf "${GRN}=====snapshot vm $l completed=====${NC}\n"
       else
         printf "${RED}=====snapshot vm $l fail=====${NC}\n"
       fi
+    fi
+  done
+}
+
+snapshot_vm() {
+  printf "${GRN}[Stage: Snapshot VM]${NC}\n"
+  idstart=$(echo $VM_id | cut -d '~' -f 1)
+  idend=$(echo $VM_id | cut -d '~' -f 2)
+  for ((n=$idstart;n<=$idend;n++))
+  do
+    if ! ssh root@"$EXECUTE_NODE" qm list | grep "$n" &>/dev/null; then
+      printf "${RED}=====vm $n not found=====${NC}\n"
+    else
+      ssh root@"$EXECUTE_NODE" qm snapshot "$n" snapshot-"$(date +"%Y-%m-%d_%H-%M-%S")" &>> /tmp/pve_vm_manager.log
+      printf "${GRN}=====snapshot vm $n completed=====${NC}\n"
     fi
   done
 }
@@ -277,14 +294,15 @@ Usage: pve_vm_manager.sh [OPTIONS]
 
 Available options:
 
-create      create the vm based on the setenvVar parameter.
-start       start all vm.
-reboot      reboot all vm.
-stop        stop all vm.
-delete      delete all vm.
-logs        show last execute command log.
-deploy      deploy kind k8s environment to the vm.
-help        display this help and exit.
+create        create the vm based on the setenvVar parameter.
+start         start all vm.
+reboot        reboot all vm.
+stop          stop all vm.
+delete        delete all vm.
+logs          show last execute command log.
+deploy        deploy kind k8s environment to the vm.
+snapshot      snapshot all vm.
+help          display this help and exit.
 EOF
   exit
 }
@@ -329,6 +347,12 @@ else
       source ./setenvVar
       [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
       dep_kind
+    ;;
+    snapshot)
+      Debug
+      source ./setenvVar
+      [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
+      snapshot_vm
     ;;
     logs)
       log_vm
