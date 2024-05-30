@@ -69,6 +69,7 @@ delete        delete all vm.
 logs          show last execute command log.
 deploy        deploy kind k8s environment to the vm.
 snapshot      snapshot all vm.
+status        show all vm status.
 help          display this help and exit.
 ```
 
@@ -121,6 +122,15 @@ $ bash pve_vm_manager.sh delete
 =====delete /tmp/pve_execute_command.log completed=====
 =====delete /tmp/pve_vm_manager.log completed=====
 =====delete nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 completed=====
+```
+### Show status
+```
+$ bash pve_vm_manager.sh status
+[Stage: Show VM status]
+      VMID NAME                 STATUS     MEM(MB)    BOOTDISK(GB) PID
+       600 alp-600              stopped    4096              50.00 0
+       601 alp-601              stopped    4096              50.00 0
+       602 alp-602              stopped    4096              50.00 0
 ```
 ### Deploy kind k8s environment to the vm
 ```
