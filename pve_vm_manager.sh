@@ -288,6 +288,20 @@ snapshot_vm() {
   done
 }
 
+status_vm() {
+  printf "${GRN}[Stage: Show VM status]${NC}\n"
+  idstart=$(echo $VM_id | cut -d '~' -f 1)
+  idend=$(echo $VM_id | cut -d '~' -f 2)
+  for ((o=$idstart;o<=$idend;o++))
+  do
+    if ! ssh -q -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list | grep "$n" &>/dev/null; then
+      printf "${RED}=====vm $n not found=====${NC}\n"
+    else
+    fi
+  done
+  ssh -q -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list
+}
+
 help() {
   cat <<EOF
 Usage: pve_vm_manager.sh [OPTIONS]
@@ -302,6 +316,7 @@ delete        delete all vm.
 logs          show last execute command log.
 deploy        deploy kind k8s environment to the vm.
 snapshot      snapshot all vm.
+status        show all vm status.
 help          display this help and exit.
 EOF
   exit
@@ -353,6 +368,12 @@ else
       source ./setenvVar
       [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
       snapshot_vm
+    ;;
+    status)
+      Debug
+      source ./setenvVar
+      [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
+      status_vm
     ;;
     logs)
       log_vm
