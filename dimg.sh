@@ -46,6 +46,6 @@ done
 
 printf "${GRN}[Stage: Delete images]${NC}\n"
 
-sudo rm images.tar.gz
+sudo rm images.tar.gz && \
 sudo podman image prune -a -f &>> /tmp/pve_vm_manager.log
-[[ "$?" == "0" ]] && printf "${GRN}=====delete images success=====${NC}\n"
+[[ "$?" == "0" ]] && printf "${GRN}=====delete images success=====${NC}\n" || printf "${RED}=====delete images fail=====${NC}\n"
