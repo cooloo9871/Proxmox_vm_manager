@@ -104,6 +104,9 @@ create_vm() {
     fi
     if [[ ! -f /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 ]]; then
       wget https://dl-cdn.alpinelinux.org/alpine/v3.19/releases/cloud/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 -O /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2
+      if [[ "$?" != '0' ]]; then
+        printf "${RED}=====download cloud init image fail=====${NC}\n" && exit 1
+      fi
       virt-customize --install qemu-guest-agent,bash,sudo -a /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2
     fi
 EOF
