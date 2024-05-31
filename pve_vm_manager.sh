@@ -296,7 +296,6 @@ status_vm() {
   do
     if ! ssh -q -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list | grep "$n" &>/dev/null; then
       printf "${RED}=====vm $n not found=====${NC}\n"
-    else
     fi
   done
   ssh -q -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list
