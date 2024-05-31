@@ -132,6 +132,7 @@ $ bash pve_vm_manager.sh status
        600 alp-600              stopped    4096              50.00 0
        601 alp-601              stopped    4096              50.00 0
        602 alp-602              stopped    4096              50.00 0
+       603 alp-603              stopped    4096              50.00 0
 ```
 ### Deploy kind k8s environment to the vm
 ```
