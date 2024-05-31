@@ -1,5 +1,5 @@
 # Proxmox_vm_manager
-## This project is used to automate implement a large number of alpine linux virtual machines in proxmox.
+## This project automates and manages the deployment of hundreds of Alpine Linux virtual machines on Proxmox.
 ## How to use
 ### Download script
 ```
