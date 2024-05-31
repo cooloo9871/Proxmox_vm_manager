@@ -66,10 +66,11 @@ start         start all vm.
 reboot        reboot all vm.
 stop          stop all vm.
 delete        delete all vm.
-logs          show last execute command log.
+logs          show the complete execution process log.
 deploy        deploy kind k8s environment to the vm.
 snapshot      snapshot all vm.
 status        show all vm status.
+debug         show execute command log.
 help          display this help and exit.
 ```
 
