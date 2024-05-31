@@ -188,7 +188,7 @@ delete_vm() {
   done
   [[ -f /tmp/pve_execute_command.log ]] && rm /tmp/pve_execute_command.log && printf "${GRN}=====delete /tmp/pve_execute_command.log completed=====${NC}\n"
   [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log && printf "${GRN}=====delete /tmp/pve_vm_manager.log completed=====${NC}\n"
-  ssh root@"$EXECUTE_NODE" rm /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 &>> /tmp/pve_vm_manager.log && printf "${GRN}=====delete nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 completed=====${NC}\n"
+  ssh root@"$EXECUTE_NODE" rm /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 &>/dev/null && printf "${GRN}=====delete nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 completed=====${NC}\n"
 }
 
 reboot_vm() {
@@ -209,6 +209,15 @@ reboot_vm() {
 }
 
 log_vm() {
+  if [[ ! -f '/tmp/pve_vm_manager.log' ]]; then
+    printf "${RED}=====log not found=====${NC}\n"
+    exit 1
+  else
+    cat /tmp/pve_vm_manager.log
+  fi
+}
+
+debug_vm() {
   if [[ ! -f '/tmp/pve_execute_command.log' ]]; then
     printf "${RED}=====log not found=====${NC}\n"
     exit 1
@@ -216,6 +225,7 @@ log_vm() {
     cat /tmp/pve_execute_command.log
   fi
 }
+
 
 dep_kind() {
   printf "${GRN}[Stage: Deploy kind k8s environment to the VM]${NC}\n"
@@ -312,10 +322,11 @@ start         start all vm.
 reboot        reboot all vm.
 stop          stop all vm.
 delete        delete all vm.
-logs          show last execute command log.
+logs          show the complete execution process log.
 deploy        deploy kind k8s environment to the vm.
 snapshot      snapshot all vm.
 status        show all vm status.
+debug         show execute command log.
 help          display this help and exit.
 EOF
   exit
@@ -376,6 +387,9 @@ else
     ;;
     logs)
       log_vm
+    ;;
+    debug)
+      debug_vm
     ;;
     *)
       help
