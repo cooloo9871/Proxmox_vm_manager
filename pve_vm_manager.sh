@@ -294,8 +294,8 @@ status_vm() {
   idend=$(echo $VM_id | cut -d '~' -f 2)
   for ((o=$idstart;o<=$idend;o++))
   do
-    if ! ssh -q -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list | grep "$n" &>/dev/null; then
-      printf "${RED}=====vm $n not found=====${NC}\n"
+    if ! ssh -q -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list | grep "$o" &>/dev/null; then
+      printf "${RED}=====vm $o not found=====${NC}\n"
     fi
   done
   ssh -q -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list
