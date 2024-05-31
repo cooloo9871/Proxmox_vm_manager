@@ -1,6 +1,6 @@
 # Proxmox_vm_manager
 ## This project is used to automate implement a large number of alpine linux virtual machines in proxmox.
-## Script usage
+## How to use
 ### Download script
 ```
 git clone https://github.com/cooloo9871/Proxmox_vm_manager.git;cd Proxmox_vm_manager
