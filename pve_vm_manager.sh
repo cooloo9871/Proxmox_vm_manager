@@ -311,7 +311,11 @@ status_vm() {
       printf "${RED}=====vm $o not found=====${NC}\n"
     fi
   done
-  ssh -q -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list
+  ssh -q -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list | head -n 1
+  for ((o=$idstart;o<=$idend;o++))
+  do
+    ssh -q -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list | grep "$o"
+  done
 }
 
 help() {
