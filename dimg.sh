@@ -14,6 +14,7 @@ idstart=$(echo $VM_id | cut -d '~' -f 1)
 idend=$(echo $VM_id | cut -d '~' -f 2)
 
 printf "${GRN}[Stage: Download images from images.txt to VM]${NC}\n"
+[[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
 [[ ! -f ./images.txt ]] && printf "${RED}=====images.txt not found=====${NC}\n" && exit 1
 
 if ! which podman &>/dev/null; then
