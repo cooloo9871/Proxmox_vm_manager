@@ -36,7 +36,7 @@ sudo podman save -m $(cat ./images.txt | grep -v '#' | tr '\n' ' ') | gzip --std
 
 for ((a=$idstart,b=$ipstart;a<=$idend,b<=$ipend;a++,b++))
 do
-  sshpass -p "$PASSWORD" scp -o "StrictHostKeyChecking no" -o ConnectTimeout=5 ./images.tar.gz "$USER"@"$VM_netid.$b":/home/"$USER"/images.tar.gz &>/dev/null
+  sshpass -p "$PASSWORD" scp -q -o "StrictHostKeyChecking no" -o ConnectTimeout=5 ./images.tar.gz "$USER"@"$VM_netid.$b":/home/"$USER"/images.tar.gz &>/dev/null
   if [[ "$?" == '0' ]]; then
     printf "${GRN}=====scp images.tar.gz on $a success=====${NC}\n"
   else
