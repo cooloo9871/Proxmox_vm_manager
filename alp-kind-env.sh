@@ -23,6 +23,11 @@ mkdir ~/cni/ && \
 curl -sL "$(curl -sL https://api.github.com/repos/containernetworking/plugins/releases/latest | jq -r '.assets[].browser_download_url' | grep 'linux-amd64.*.tgz$')" -o ~/cni/cni-plugins.tgz && \
 tar xf ~/cni/cni-plugins.tgz -C ~/cni; rm ~/cni/cni-plugins.tgz
 
+mkdir ~/wulin/yaml
+
+wget http://www.oc99.org/zip/kind2024v1.0.zip -O ~/kind2024v1.0.zip
+unzip kind2024v1.0.zip
+sudo rm -r kind2024v1.0.zip
 
 cat <<EOF | sudo tee /etc/profile
 #!/bin/bash
@@ -44,7 +49,7 @@ ips=\$(ifconfig \$GWIF | grep 'inet ')
 export IP=\$(echo \$ips | cut -d' ' -f2 | cut -d':' -f2)
 export NETID=\${IP%.*}
 export GW=\$(route -n | grep -e '^0.0.0.0' | tr -s \ - | cut -d ' ' -f2)
-export PATH="/home/bigred/bin:/home/bigred/vmalpdt/bin:\$PATH"
+export PATH="/home/bigred/bin:/home/bigred/kind/bin:\$PATH"
 # source /home/bigred/bin/myk3s
 clear && sleep 2
 echo "Welcome to Alpine Linux : `cat /etc/alpine-release`"
@@ -317,5 +322,7 @@ tty6::respawn:/sbin/getty 38400 tty6
 
 ttyS0::respawn:/bin/login -f $USER
 EOF
+
+
 
 sudo reboot
