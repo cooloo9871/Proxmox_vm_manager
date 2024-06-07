@@ -61,11 +61,6 @@ echo "Welcome to Alpine Linux : `cat /etc/alpine-release`"
 [ "\$IP" != "" ] && echo "IP : \$IP"
 echo ""
 
-if [ "\$USER" == "bigred" ]; then
-  # change hostname & set IP
-  sudo /home/bigred/bin/chnameip
-fi
-
 export PS1="[\\${STY#*.}]\u@\h:\w\$ "
 alias ping='ping -c 4 '
 alias pingdup='sudo arping -D -I eth0 -c 2 '
@@ -142,75 +137,6 @@ EOF
 sudo chmod +x /etc/local.d/rc.local.start
 
 mkdir ~/bin
-
-cat <<EOF | tee ~/bin/chnameip
-#!/bin/bash
-
-ifn=\$(lspci | grep Ethernet | wc -l)
-[ "\$ifn" -gt "1" ] && exit 0
-
-cat /etc/network/interfaces | grep -e "^auto br0" &>/dev/null
-[ "\$?" == "0" ] && exit 0
-
-cat /etc/network/interfaces | grep -e "^#keep" &>/dev/null
-[ "\$?" == "0" ] && exit 0
-
-gw=\$(route -n | grep -e "^0.0.0.0 ")
-export GWIF=\${gw##* }
-ips=\$(ifconfig \$GWIF | grep 'inet ')
-export IP=\$(echo \$ips | cut -d' ' -f2 | cut -d':' -f2)
-export NETID=\${IP%.*}
-export GW=\$(route -n | grep -e '^0.0.0.0' | tr -s \ - | cut -d ' ' -f2)
-
-mac=\$(cat /sys/class/net/eth0/address | cut -d':' -f5,6)
-h=\$(cat /home/bigred/bin/mactohost | grep "\$mac" | cut -d ' ' -f2)
-
-if [ "\$h" != "" ]; then
-   if [ \$h != `hostname` ]; then
-      t=\$(echo "\$mac" | cut -d ':' -f1); i=\$(echo "\$mac" | cut -d ':' -f2)
-      ip=\$(( \$t+10#\$i ))
-      #i=\$((16#\$i))
-
-      echo "\$h" | sudo tee /etc/hostname
-      echo "auto lo
-iface lo inet loopback
-
-auto eth0
-iface eth0 inet static
-      address \$NETID.\$ip
-      netmask 255.255.255.0
-      gateway \$GW
-
-" | sudo tee /etc/network/interfaces &>/dev/null
-
-      echo "127.0.0.1 localhost alp" | sudo tee /etc/hosts &>/dev/null
-      c=0; m=\$(cat /home/bigred/bin/mactohost | grep "\$t:" | cut -d ' ' -f2)
-      for n in \$m
-      do
-        ip=\$(( \$t+\$c )); c=\$(( \$c+1 ))
-        echo "\$NETID.\$ip \$n" | sudo tee -a /etc/hosts
-      done
-      reboot; sleep 5
-   fi
-else
-   cat /etc/network/interfaces | grep ' inet dhcp' &>/dev/null
-   if [ "\$?" != "0" ]; then
-      echo "auto lo
-iface lo inet loopback
-
-auto eth0
-iface eth0 inet dhcp
-
-" | sudo tee /etc/network/interfaces &>/dev/null
-      echo "alp" | sudo tee /etc/hostname
-      echo "127.0.0.1 localhost alp" | sudo tee /etc/hosts &>/dev/null
-      echo "nameserver 8.8.8.8" | sudo tee -a /etc/resolv.conf
-      sudo reboot
-   fi
-fi
-EOF
-
-chmod +x ~/bin/chnameip
 
 cat <<EOF | tee ~/bin/dknet
 #!/bin/bash
