@@ -210,6 +210,8 @@ iface eth0 inet dhcp
 fi
 EOF
 
+chmod +x ~/bin/chnameip
+
 cat <<EOF | tee ~/bin/dknet
 #!/bin/bash
 [ "\$#" != 2 ] && echo "dknet ctn net" && exit 1
