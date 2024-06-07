@@ -4,6 +4,6 @@ docker.io/calico/kube-controllers:v3.27.3
 docker.io/calico/node:v3.27.3
 docker.io/flannel/flannel:v0.21.3
 docker.io/kindest/local-path-provisioner:v20240513-b9bba138
-juicedata/csi-dashboard:v0.24.0
-juicedata/juicefs-csi-driver:v0.24.0
-minio/minio
+docker.io/juicedata/csi-dashboard:v0.24.0
+docker.io/juicedata/juicefs-csi-driver:v0.24.0
+docker.io/minio/minio
