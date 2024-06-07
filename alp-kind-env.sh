@@ -26,7 +26,7 @@ mkdir ~/cni/ && \
 curl -sL "$(curl -sL https://api.github.com/repos/containernetworking/plugins/releases/latest | jq -r '.assets[].browser_download_url' | grep 'linux-amd64.*.tgz$')" -o ~/cni/cni-plugins.tgz && \
 tar xf ~/cni/cni-plugins.tgz -C ~/cni; rm ~/cni/cni-plugins.tgz
 
-mkdir ~/wulin/yaml
+mkdir -p ~/wulin/yaml
 
 wget http://www.oc99.org/zip/kind2024v1.0.zip -O ~/kind2024v1.0.zip
 unzip kind2024v1.0.zip
