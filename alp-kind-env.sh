@@ -38,35 +38,35 @@ cat <<EOF | sudo tee /etc/profile
 #!/bin/bash
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 export PAGER=less
-export PS1='\h:\w\$ '
+export PS1='\h:\w\\$ '
 umask 022
 
 for script in /etc/profile.d/*.sh ; do
-        if [ -r $script ] ; then
-                . $script
+        if [ -r \$script ] ; then
+                . \$script
         fi
 done
 
 # Alpine 的啟動系統是 openrc, 登入前會執行 /etc/local.d/rc.local.start, 登入後會執行 /etc/profile
-gw=$(route -n | grep -e "^0.0.0.0 ")
-export GWIF=${gw##* }
-ips=$(ifconfig $GWIF | grep 'inet ')
-export IP=$(echo $ips | cut -d' ' -f2 | cut -d':' -f2)
-export NETID=${IP%.*}
-export GW=$(route -n | grep -e '^0.0.0.0' | tr -s \ - | cut -d ' ' -f2)
-export PATH="/home/bigred/bin:/home/bigred/kind/bin:$PATH"
+gw=\$(route -n | grep -e "^0.0.0.0 ")
+export GWIF=\${gw##* }
+ips=\$(ifconfig \$GWIF | grep 'inet ')
+export IP=\$(echo \$ips | cut -d' ' -f2 | cut -d':' -f2)
+export NETID=\${IP%.*}
+export GW=\$(route -n | grep -e '^0.0.0.0' | tr -s \ - | cut -d ' ' -f2)
+export PATH="/home/bigred/bin:/home/bigred/kind/bin:\$PATH"
 # source /home/bigred/bin/myk3s
 clear && sleep 2
 echo "Welcome to Alpine Linux : `cat /etc/alpine-release`"
-[ "$IP" != "" ] && echo "IP : $IP"
+[ "\$IP" != "" ] && echo "IP : \$IP"
 echo ""
 
-if [ "$USER" == "bigred" ]; then
+if [ "\$USER" == "bigred" ]; then
   # change hostname & set IP
   sudo /home/bigred/bin/chnameip
 fi
 
-export PS1="[\${STY#*.}]\u@\h:\w$ "
+export PS1="[\\${STY#*.}]\u@\h:\w\$ "
 alias ping='ping -c 4 '
 alias pingdup='sudo arping -D -I eth0 -c 2 '
 alias dir='ls -alh '
@@ -82,7 +82,7 @@ alias pc='sudo podman system prune -a -f'
 alias vms='sudo /usr/bin/vmware-toolbox-cmd disk shrink /'
 
 # /etc/local.d/rc.local.start (相當於 rc.local) create /tmp/sinfo
-if [ -z "$SSH_TTY" ]; then
+if [ -z "\$SSH_TTY" ]; then
    [ -f /tmp/sinfo ] && dialog --title " Cloud Native Trainer " --textbox /tmp/sinfo 24 85; clear
 fi
 
