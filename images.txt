@@ -1,4 +1,4 @@
-# This file is used to download the image to the alpine linux vm ,store on the home directory named images.tar.
+# This file is used to download the image to the alpine linux vm ,image tar named images.tar store on the home directory.
 docker.io/calico/cni:v3.27.3
 docker.io/calico/kube-controllers:v3.27.3
 docker.io/calico/node:v3.27.3
