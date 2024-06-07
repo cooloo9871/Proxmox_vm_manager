@@ -268,8 +268,6 @@ dep_kind() {
     fi
   done
 
-  sleep 60
-  
   printf "${GRN}[Stage: Snapshot the VM]${NC}\n"
   for ((l=$idstart;l<=$idend;l++))
   do
@@ -316,6 +314,50 @@ status_vm() {
   done
 }
 
+downloadimg_vm() {
+  ipstart=$(echo $VM_ip | cut -d '~' -f 1)
+  ipend=$(echo $VM_ip | cut -d '~' -f 2)
+  idstart=$(echo $VM_id | cut -d '~' -f 1)
+  idend=$(echo $VM_id | cut -d '~' -f 2)
+
+  printf "${GRN}[Stage: Download images from images.txt to VM]${NC}\n"
+  [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
+  [[ ! -f ./images.txt ]] && printf "${RED}=====images.txt not found=====${NC}\n" && exit 1
+
+  if ! which podman &>/dev/null; then
+    printf "${RED}=====podman command not found,please install on localhost=====${NC}\n"
+    exit 1
+  fi
+
+  if ! which sshpass &>/dev/null; then
+    printf "${RED}=====sshpass command not found,please install on localhost=====${NC}\n"
+    exit 1
+  fi
+
+  while read img
+  do
+    sudo podman pull $img &>> /tmp/pve_vm_manager.log
+  done < <(cat ./images.txt | grep -v '#')
+
+  sudo podman save -m $(cat ./images.txt | grep -v '#' | tr '\n' ' ') > images.tar
+
+  for ((a=$idstart,b=$ipstart;a<=$idend,b<=$ipend;a++,b++))
+  do
+    sshpass -p "$PASSWORD" scp -q -o "StrictHostKeyChecking no" -o ConnectTimeout=5 ./images.tar "$USER"@"$VM_netid.$b":/home/"$USER"/images.tar &>/dev/null
+    if [[ "$?" == '0' ]]; then
+      printf "${GRN}=====scp images.tar on $a success=====${NC}\n"
+    else
+      printf "${RED}=====scp images.tar on $a fail=====${NC}\n"
+    fi
+  done
+
+  printf "${GRN}[Stage: Delete images]${NC}\n"
+
+  sudo rm images.tar && \
+  sudo podman image prune -a -f &>> /tmp/pve_vm_manager.log
+  [[ "$?" == "0" ]] && printf "${GRN}=====delete images success=====${NC}\n" || printf "${RED}=====delete images fail=====${NC}\n"
+}
+
 help() {
   cat <<EOF
 Usage: pve_vm_manager.sh [OPTIONS]
@@ -331,6 +373,7 @@ logs          show the complete execution process log.
 deploy        deploy kind k8s environment to the vm.
 snapshot      snapshot all vm.
 status        show all vm status.
+dimg          download the image to all the vm,image tar named images.tar.
 debug         show execute command log.
 help          display this help and exit.
 EOF
@@ -389,6 +432,12 @@ else
       source ./setenvVar
       [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
       status_vm
+    ;;
+    dimg)
+      Debug
+      source ./setenvVar
+      [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log
+      downloadimg_vm
     ;;
     logs)
       log_vm
