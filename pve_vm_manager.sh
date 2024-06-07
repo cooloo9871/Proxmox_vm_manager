@@ -268,6 +268,8 @@ dep_kind() {
     fi
   done
 
+  sleep 40
+  
   printf "${GRN}[Stage: Snapshot the VM]${NC}\n"
   for ((l=$idstart;l<=$idend;l++))
   do
