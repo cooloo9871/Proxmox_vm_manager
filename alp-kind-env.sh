@@ -48,36 +48,23 @@ for script in /etc/profile.d/*.sh ; do
 done
 
 # Alpine 的啟動系統是 openrc, 登入前會執行 /etc/local.d/rc.local.start, 登入後會執行 /etc/profile
-gw=\$(route -n | grep -e "^0.0.0.0 ")
-export GWIF=\${gw##* }
-ips=\$(ifconfig \$GWIF | grep 'inet ')
-export IP=\$(echo \$ips | cut -d' ' -f2 | cut -d':' -f2)
-export NETID=\${IP%.*}
-export GW=\$(route -n | grep -e '^0.0.0.0' | tr -s \ - | cut -d ' ' -f2)
-export PATH="/home/bigred/bin:/home/bigred/kind/bin:\$PATH"
+gw=$(route -n | grep -e "^0.0.0.0 ")
+export GWIF=${gw##* }
+ips=$(ifconfig $GWIF | grep 'inet ')
+export IP=$(echo $ips | cut -d' ' -f2 | cut -d':' -f2)
+export NETID=${IP%.*}
+export GW=$(route -n | grep -e '^0.0.0.0' | tr -s \ - | cut -d ' ' -f2)
+export PATH="/home/bigred/bin:/home/bigred/kind/bin:$PATH"
 # source /home/bigred/bin/myk3s
 clear && sleep 2
 echo "Welcome to Alpine Linux : `cat /etc/alpine-release`"
-[ "\$IP" != "" ] && echo "IP : \$IP"
+[ "$IP" != "" ] && echo "IP : $IP"
 echo ""
 
-#if [ "\$USER" == "bigred" ]; then
+if [ "$USER" == "bigred" ]; then
   # change hostname & set IP
-  # sudo /home/bigred/bin/chnameip
-
-  # create join k3s command
-  #which kubectl &>/dev/null
-  #if [ "\$?" == "0" ]; then
-  #   if [ -z "\$SSH_TTY" ]; then
-  #      echo "K3S Starting, pls wait 30 sec" && sleep 30
-  #      kubectl get nodes 2>/dev/null | grep master | grep `hostname` &>/dev/null
-  #      if [ "\$?" == "0" ]; then
-  #         echo "sudo curl -sfL https://get.k3s.io | K3S_URL=https://\$IP:6443 K3S_TOKEN=`sudo cat /var/lib/rancher/k3s/server/node-token` K3S_KUBECONFIG_MODE='644' sh - && sudo reboot" > /home/bigred/bin/joink3s
-  #         chmod +x /home/bigred/bin/joink3s
-  #      fi
-  #   fi
-  #fi
-#fi
+  sudo /home/bigred/bin/chnameip
+fi
 
 export PS1="[\${STY#*.}]\u@\h:\w$ "
 alias ping='ping -c 4 '
@@ -92,49 +79,14 @@ alias kc='kubectl create'
 alias ks='kubectl get pods -n kube-system'
 alias docker='sudo podman'
 alias pc='sudo podman system prune -a -f'
-
-[ -f /home/bigred/dt/alpine.bash ] && source /home/bigred/dt/alpine.bash
+alias vms='sudo /usr/bin/vmware-toolbox-cmd disk shrink /'
 
 # /etc/local.d/rc.local.start (相當於 rc.local) create /tmp/sinfo
-if [ -z "\$SSH_TTY" ]; then
+if [ -z "$SSH_TTY" ]; then
    [ -f /tmp/sinfo ] && dialog --title " Cloud Native Trainer " --textbox /tmp/sinfo 24 85; clear
 fi
 
-docker ps -a | grep -e "Up.*c27" &>/dev/null
-[ "\$?" == "0" ] && export c27="true" && echo "c27 Up"
-
-docker ps -a | grep -e "Up.*c24" &>/dev/null
-[ "\$?" == "0" ] && export c24="true" && echo "c24 Up"
-
-docker ps -a | grep -e "Up.*c28" &>/dev/null
-[ "\$?" == "0" ] && export c28="true" && echo "c28 Up"
-
-docker ps -a | grep -e "Up.*c29" &>/dev/null
-[ "\$?" == "0" ] && export c29="true" && echo "c29 Up"
-
 export KIND_EXPERIMENTAL_PROVIDER='podman kind create cluster'
-export C24=\$(docker ps -a | grep -o -e "c24-[a-z]*[-]*[a-z]*" | tr '\n' ' ')
-export C27=\$(docker ps -a | grep -o -e "c27-[a-z]*[-]*[a-z]*[1-9]*" | tr '\n' ' ')
-export C28=\$(docker ps -a | grep -o -e "c28-[a-z]*[-]*[a-z]*" | tr '\n' ' ')
-export C29=\$(docker ps -a | grep -o -e "c29-[a-z]*[-]*[a-z]*[1-9]*" | tr '\n' ' ')
-
-alias c24gm='([ "\$c24" != "true" ] && [ "\$c27" != "true" ]) && docker start \$C24 && c24="true"'
-alias c24gn='[ "\$c24" == "true" ] && docker stop \$C24 && c24=""'
-alias c27gm='([ "\$c24" != "true" ] && [ "\$c27" != "true" ]) && docker start \$C27 && c27="true"'
-alias c27gn='[ "\$c27" == "true" ] && docker stop \$C27 && c27=""'
-alias c27adm='[ "\$c27" == "true" ] && docker exec -it c27-control-plane bash'
-alias c24adm='[ "\$c24" == "true" ] && docker exec -it c24-control-plane bash'
-
-alias c28gm='([ "\$c28" != "true" ] && [ "\$c29" != "true" ]) && docker start \$C28 && c28="true"'
-alias c28gn='[ "\$c28" == "true" ] && docker stop \$C28 && c28=""'
-alias c29gm='([ "\$c28" != "true" ] && [ "\$c29" != "true" ]) && docker start \$C29 && c29="true"'
-alias c29gn='[ "\$c29" == "true" ] && docker stop \$C29 && c29=""'
-alias c29adm='[ "\$c29" == "true" ] && docker exec -it c29-control-plane bash'
-alias c28adm='[ "\$c28" == "true" ] && docker exec -it c28-control-plane bash'
-
-alias kup='([ "\$c28" == "true" ] && echo "c28 Up") || ([ "\$c29" == "true" ] && echo "c29 Up")'
-
-alias vms='sudo /usr/bin/vmware-toolbox-cmd disk shrink /'
 EOF
 
 cat <<EOF | sudo tee /etc/local.d/rc.local.start
@@ -190,6 +142,73 @@ EOF
 sudo chmod +x /etc/local.d/rc.local.start
 
 mkdir ~/bin
+
+cat <<EOF | tee ~/bin/chnameip
+#!/bin/bash
+
+ifn=\$(lspci | grep Ethernet | wc -l)
+[ "\$ifn" -gt "1" ] && exit 0
+
+cat /etc/network/interfaces | grep -e "^auto br0" &>/dev/null
+[ "\$?" == "0" ] && exit 0
+
+cat /etc/network/interfaces | grep -e "^#keep" &>/dev/null
+[ "\$?" == "0" ] && exit 0
+
+gw=\$(route -n | grep -e "^0.0.0.0 ")
+export GWIF=\${gw##* }
+ips=\$(ifconfig \$GWIF | grep 'inet ')
+export IP=\$(echo \$ips | cut -d' ' -f2 | cut -d':' -f2)
+export NETID=\${IP%.*}
+export GW=\$(route -n | grep -e '^0.0.0.0' | tr -s \ - | cut -d ' ' -f2)
+
+mac=\$(cat /sys/class/net/eth0/address | cut -d':' -f5,6)
+h=\$(cat /home/bigred/bin/mactohost | grep "\$mac" | cut -d ' ' -f2)
+
+if [ "\$h" != "" ]; then
+   if [ \$h != `hostname` ]; then
+      t=\$(echo "\$mac" | cut -d ':' -f1); i=\$(echo "\$mac" | cut -d ':' -f2)
+      ip=\$(( \$t+10#\$i ))
+      #i=\$((16#\$i))
+
+      echo "\$h" | sudo tee /etc/hostname
+      echo "auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+      address \$NETID.\$ip
+      netmask 255.255.255.0
+      gateway \$GW
+
+" | sudo tee /etc/network/interfaces &>/dev/null
+
+      echo "127.0.0.1 localhost alp" | sudo tee /etc/hosts &>/dev/null
+      c=0; m=\$(cat /home/bigred/bin/mactohost | grep "\$t:" | cut -d ' ' -f2)
+      for n in \$m
+      do
+        ip=\$(( \$t+\$c )); c=\$(( \$c+1 ))
+        echo "\$NETID.\$ip \$n" | sudo tee -a /etc/hosts
+      done
+      reboot; sleep 5
+   fi
+else
+   cat /etc/network/interfaces | grep ' inet dhcp' &>/dev/null
+   if [ "\$?" != "0" ]; then
+      echo "auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet dhcp
+
+" | sudo tee /etc/network/interfaces &>/dev/null
+      echo "alp" | sudo tee /etc/hostname
+      echo "127.0.0.1 localhost alp" | sudo tee /etc/hosts &>/dev/null
+      echo "nameserver 8.8.8.8" | sudo tee -a /etc/resolv.conf
+      sudo reboot
+   fi
+fi
+EOF
 
 cat <<EOF | tee ~/bin/dknet
 #!/bin/bash
