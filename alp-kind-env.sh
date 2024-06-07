@@ -19,6 +19,9 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && \
 sudo rm -r kubectl
 
+sudo curl https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/bin/mc
+sudo chmod +x /usr/bin/mc
+
 mkdir ~/cni/ && \
 curl -sL "$(curl -sL https://api.github.com/repos/containernetworking/plugins/releases/latest | jq -r '.assets[].browser_download_url' | grep 'linux-amd64.*.tgz$')" -o ~/cni/cni-plugins.tgz && \
 tar xf ~/cni/cni-plugins.tgz -C ~/cni; rm ~/cni/cni-plugins.tgz
@@ -28,6 +31,8 @@ mkdir ~/wulin/yaml
 wget http://www.oc99.org/zip/kind2024v1.0.zip -O ~/kind2024v1.0.zip
 unzip kind2024v1.0.zip
 sudo rm -r kind2024v1.0.zip
+
+wget https://raw.githubusercontent.com/braveantony/bash-script/main/kind/kindctl -O ~/bin/kindctl && chmod +x ~/bin/kindctl
 
 cat <<EOF | sudo tee /etc/profile
 #!/bin/bash
@@ -293,8 +298,6 @@ done
 EOF
 
 chmod +x ~/bin/pingnid
-
-wget https://raw.githubusercontent.com/braveantony/bash-script/main/kind/kindctl -O ~/bin/kindctl && chmod +x ~/bin/kindctl
 
 cat <<EOF | sudo tee /etc/inittab
 # /etc/inittab
