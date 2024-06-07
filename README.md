@@ -71,6 +71,7 @@ logs          show the complete execution process log.
 deploy        deploy kind k8s environment to the vm.
 snapshot      snapshot all vm.
 status        show all vm status.
+dimg          download the image to all the vm,image tar named images.tar.
 debug         show execute command log.
 help          display this help and exit.
 ```
@@ -161,6 +162,17 @@ $ bash pve_vm_manager.sh snapshot
 =====snapshot vm 601 completed=====
 =====snapshot vm 602 completed=====
 =====snapshot vm 603 completed=====
+```
+### Download image to all the vm
+```
+$ bash pve_vm_manager.sh dimg
+[Stage: Download images from images.txt to VM]
+=====scp images.tar on 600 success=====
+=====scp images.tar on 601 success=====
+=====scp images.tar on 602 success=====
+=====scp images.tar on 603 success=====
+[Stage: Delete images]
+=====delete images success=====
 ```
 ### Show logs
 ```
