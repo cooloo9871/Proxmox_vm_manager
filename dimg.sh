@@ -32,20 +32,20 @@ do
   sudo podman pull $img &>> /tmp/pve_vm_manager.log
 done < <(cat ./images.txt | grep -v '#')
 
-sudo podman save -m $(cat ./images.txt | grep -v '#' | tr '\n' ' ') | gzip --stdout > images.tar.gz
+sudo podman save -m $(cat ./images.txt | grep -v '#' | tr '\n' ' ') > images.tar
 
 for ((a=$idstart,b=$ipstart;a<=$idend,b<=$ipend;a++,b++))
 do
-  sshpass -p "$PASSWORD" scp -q -o "StrictHostKeyChecking no" -o ConnectTimeout=5 ./images.tar.gz "$USER"@"$VM_netid.$b":/home/"$USER"/images.tar.gz &>/dev/null
+  sshpass -p "$PASSWORD" scp -q -o "StrictHostKeyChecking no" -o ConnectTimeout=5 ./images.tar.gz "$USER"@"$VM_netid.$b":/home/"$USER"/images.tar &>/dev/null
   if [[ "$?" == '0' ]]; then
-    printf "${GRN}=====scp images.tar.gz on $a success=====${NC}\n"
+    printf "${GRN}=====scp images.tar on $a success=====${NC}\n"
   else
-    printf "${RED}=====scp images.tar.gz on $a fail=====${NC}\n"
+    printf "${RED}=====scp images.tar on $a fail=====${NC}\n"
   fi
 done
 
 printf "${GRN}[Stage: Delete images]${NC}\n"
 
-sudo rm images.tar.gz && \
+sudo rm images.tar && \
 sudo podman image prune -a -f &>> /tmp/pve_vm_manager.log
 [[ "$?" == "0" ]] && printf "${GRN}=====delete images success=====${NC}\n" || printf "${RED}=====delete images fail=====${NC}\n"
