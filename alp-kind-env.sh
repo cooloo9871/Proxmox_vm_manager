@@ -61,7 +61,7 @@ echo "Welcome to Alpine Linux : `cat /etc/alpine-release`"
 [ "\$IP" != "" ] && echo "IP : \$IP"
 echo ""
 
-export PS1="[\\${STY#*.}]\u@\h:\w\$ "
+export PS1="[\${STY#*.}]\u@\h:\w\$ "
 alias ping='ping -c 4 '
 alias pingdup='sudo arping -D -I eth0 -c 2 '
 alias dir='ls -alh '
