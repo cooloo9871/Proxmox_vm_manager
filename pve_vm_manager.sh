@@ -151,6 +151,9 @@ start_vm() {
   do
     if ! ssh -q -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list | grep "$d" &>/dev/null; then
       printf "${RED}=====vm $d not found=====${NC}\n"
+    elif
+      ssh -q -o "StrictHostKeyChecking no" root@"$EXECUTE_NODE" qm list | grep "$d" | grep 'running' &>/dev/null; then
+      printf "${YEL}=====vm $d already running=====${NC}\n"
     else
       ssh root@"$EXECUTE_NODE" qm start "$d" &>> /tmp/pve_vm_manager.log
       sleep 10
