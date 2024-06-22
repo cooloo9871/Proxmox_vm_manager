@@ -294,10 +294,4 @@ tty6::respawn:/sbin/getty 38400 tty6
 ttyS0::respawn:/bin/login -f $USER
 EOF
 
-wget --save-cookies /home/"$USER"/cookies.txt 'https://docs.google.com/uc?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh' -O- | sed -rn 's/.*name="uuid" value=\"([0-9A-Za-z_\-]+).*/\1/p' > /home/"$USER"/google_uuid.txt
-
-wget --load-cookies /home/"$USER"/cookies.txt -O /home/"$USER"/ssh.zip 'https://drive.usercontent.google.com/download?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh&confirm=t&uuid='$(</home/"$USER"/google_uuid.txt)
-
-rm ssh.zip cookies.txt google_uuid.txt
-
 sudo reboot
