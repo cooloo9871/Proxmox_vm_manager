@@ -195,6 +195,7 @@ delete_vm() {
   [[ -f /tmp/pve_execute_command.log ]] && rm /tmp/pve_execute_command.log && printf "${GRN}=====delete /tmp/pve_execute_command.log completed=====${NC}\n"
   [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log && printf "${GRN}=====delete /tmp/pve_vm_manager.log completed=====${NC}\n"
   ssh root@"$EXECUTE_NODE" rm /var/vmimg/nocloud_alpine.qcow2 &>/dev/null && printf "${GRN}=====delete nocloud_alpine.qcow2 completed=====${NC}\n"
+  ssh root@"$EXECUTE_NODE" rm /var/lib/vz/snippets/* &>/dev/null && printf "${GRN}=====delete cloud init yml completed=====${NC}\n"
 }
 
 reboot_vm() {
