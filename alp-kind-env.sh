@@ -46,13 +46,13 @@ unzip kind2024v1.0.zip
 sudo rm -r kind2024v1.0.zip
 
 cat <<EOF | sudo tee /etc/subuid
-bigred:100000:65535
+$USER:100000:65535
 rbean:200000:65535
 gbean:300000:65535
 EOF
 
 cat <<EOF | sudo tee /etc/subgid
-bigred:100000:65535
+$USER:100000:65535
 rbean:200000:65535
 gbean:300000:65535
 EOF
