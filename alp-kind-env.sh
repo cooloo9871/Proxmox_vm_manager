@@ -5,14 +5,6 @@ https://dl-cdn.alpinelinux.org/alpine/v3.20/main
 https://dl-cdn.alpinelinux.org/alpine/v3.20/community
 EOF
 
-echo -e "\n" | ssh-keygen -t rsa -P ''
-
-sudo sed -i 's/^#   StrictHostKeyChecking ask/StrictHostKeyChecking no/' /etc/ssh/ssh_config
-
-cat <<EOF | sudo tee /etc/hosts
-127.0.0.1 localhost M109
-EOF
-
 sudo apk update;sudo apk upgrade
 
 sudo apk add tree unzip open-vm-tools pciutils rclone curl wget zip grep bash procps util-linux-misc dialog go udev jq sudo iproute2 net-tools aardvark-dns util-linux openrc alpine-base alpine-conf alpine-keys alsa-lib apk-tools argon2 autologin binutils bridge bridge-utils brotli c-ares capstone catatonit conmon containers-common crun cryptsetup lvm2 elinks encodings ethtool file findutils font-dejavu fontconfig fping freetype fstrm fts fuse gcc gcompat gdbm giflib glib gmp gnutls gpgme gnupg gpm hwids isl26 jansson java-cacerts java-common java-jffi json-c k9s keyutils krb5-conf krb5 kubernetes lcms2 lddtree acl libaio libassuan attr libbpf libbsd bzip2 libc-dev libcap-ng e2fsprogs openssl libeconf libedit elfutils expat libffi libfontenc libgcrypt libgpg-error libidn2 gettext libjpeg-turbo libksba openldap lksctp-tools libmd libmnl ncurses libnftnl libpng procps-ng cyrus-sasl libseccomp libslirp libtasn1 libucontext libunistring liburing libutempter libuv libverto libx11 libxau libxcb libxcomposite libxdmcp libxext libxi libxml2 libxrender iptables libxtst linux-pam linux-lts lz4 lzo mdev-conf mkfontscale mkinitfs mpc1 mpdecimal mpfr4 mtools musl-obstack musl mariadb nano netavark nettle nghttp2 npth nspr nss numactl oniguruma openblas pcre2 pcsc-lite perl perl-error git pinentry pixman pkgconf protobuf-c readline pax-utils screen skalibs slirp4netns snappy sqlite sshpass busybox syslinux utmps vde2 xz yajl zlib zstd agetty podman
@@ -34,6 +26,12 @@ sudo rm -r kubectl
 
 sudo curl https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/bin/mc
 sudo chmod +x /usr/bin/mc
+
+sudo sed -i 's/^#   StrictHostKeyChecking ask/StrictHostKeyChecking no/' /etc/ssh/ssh_config
+
+cat <<EOF | sudo tee /etc/hosts
+127.0.0.1 localhost M109
+EOF
 
 mkdir ~/cni/ && \
 curl -sL "$(curl -sL https://api.github.com/repos/containernetworking/plugins/releases/latest | jq -r '.assets[].browser_download_url' | grep 'linux-amd64.*.tgz$')" -o ~/cni/cni-plugins.tgz && \
@@ -296,6 +294,10 @@ tty6::respawn:/sbin/getty 38400 tty6
 ttyS0::respawn:/bin/login -f $USER
 EOF
 
+wget --save-cookies /home/"$USER"/cookies.txt 'https://docs.google.com/uc?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh' -O- | sed -rn 's/.*name="uuid" value=\"([0-9A-Za-z_\-]+).*/\1/p' > /home/"$USER"/google_uuid.txt
 
+wget --load-cookies /home/"$USER"/cookies.txt -O /home/"$USER"/ssh.zip 'https://drive.usercontent.google.com/download?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh&confirm=t&uuid='$(</home/"$USER"/google_uuid.txt)
+
+rm ssh.zip cookies.txt google_uuid.txt
 
 sudo reboot
