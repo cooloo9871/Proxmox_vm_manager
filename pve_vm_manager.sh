@@ -107,7 +107,7 @@ create_vm() {
       if [[ "$?" != '0' ]]; then
         printf "${RED}=====download cloud init image fail=====${NC}\n" && exit 1
       fi
-      virt-customize --install qemu-guest-agent,bash,sudo -a /var/vmimg/nocloud_alpine.qcow2
+      virt-customize --install qemu-guest-agent,bash,sudo,wget -a /var/vmimg/nocloud_alpine.qcow2
     fi
 EOF
 
@@ -260,9 +260,9 @@ dep_kind() {
     elif ! ssh root@"$EXECUTE_NODE" qm list | grep "$l" | grep running &>/dev/null; then
       printf "${RED}=====vm $l not running=====${NC}\n"
     else
-      sshpass -p "$PASSWORD" ssh "$USER"@"$VM_netid.$m" /bin/bash << EOF &>> /tmp/pve_vm_manager.log && \
-        wget -q --save-cookies /home/"$USER"/cookies.txt 'https://docs.google.com/uc?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh' -O- | sed -rn 's/.*name="uuid" value=\"([0-9A-Za-z_\-]+).*/\1/p' > /home/"$USER"/google_uuid.txt
-        wget --load-cookies /home/"$USER"/cookies.txt -O /home/"$USER"/ssh.zip 'https://drive.usercontent.google.com/download?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh&confirm=t&uuid='$(</home/"$USER"/google_uuid.txt)
+      sshpass -p "$PASSWORD" ssh -o "StrictHostKeyChecking no" "$USER"@"$VM_netid.$m" /bin/bash << EOF &>> /tmp/pve_vm_manager.log && \
+        wget -q --save-cookies ~/cookies.txt 'https://docs.google.com/uc?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh' -O- | sed -rn 's/.*name="uuid" value=\"([0-9A-Za-z_\-]+).*/\1/p' > ~/google_uuid.txt
+        wget --load-cookies ~/cookies.txt -O ~/ssh.zip 'https://drive.usercontent.google.com/download?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh&confirm=t&uuid='$(<~/google_uuid.txt)
         unzip -o ssh.zip
         rm ssh.zip cookies.txt google_uuid.txt
 EOF
