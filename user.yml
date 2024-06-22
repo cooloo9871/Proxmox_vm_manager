@@ -1,5 +1,5 @@
 #cloud-config
-hostname: alpine
+hostname: m109
 package_update: true
 packages:
   - nano
