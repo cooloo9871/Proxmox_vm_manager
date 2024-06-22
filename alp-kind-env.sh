@@ -7,7 +7,7 @@ EOF
 
 echo -e "\n" | ssh-keygen -t rsa -P ''
 
-sed -i 's/^#   StrictHostKeyChecking ask$/StrictHostKeyChecking no/' /etc/ssh/ssh_config
+sudo sed -i 's/^#   StrictHostKeyChecking ask/StrictHostKeyChecking no/' /etc/ssh/ssh_config
 
 sudo apk update;sudo apk upgrade
 
