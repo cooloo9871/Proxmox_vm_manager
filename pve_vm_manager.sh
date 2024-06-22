@@ -102,19 +102,19 @@ create_vm() {
     if [[ ! -d /var/lib/vz/snippets/ ]]; then
       mkdir -p /var/lib/vz/snippets/
     fi
-    if [[ ! -f /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 ]]; then
-      wget https://dl-cdn.alpinelinux.org/alpine/v3.19/releases/cloud/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 -O /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2
+    if [[ ! -f /var/vmimg/nocloud_alpine.qcow2 ]]; then
+      wget https://dl-cdn.alpinelinux.org/alpine/v3.20/releases/cloud/nocloud_alpine-3.20.1-x86_64-bios-tiny-r0.qcow2 -O /var/vmimg/nocloud_alpine.qcow2
       if [[ "$?" != '0' ]]; then
         printf "${RED}=====download cloud init image fail=====${NC}\n" && exit 1
       fi
-      virt-customize --install qemu-guest-agent,bash,sudo -a /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2
+      virt-customize --install qemu-guest-agent,bash,sudo -a /var/vmimg/nocloud_alpine.qcow2
     fi
 EOF
 
   for ((z=$idstart;z<=$idend;z++))
   do
     ssh root@"$EXECUTE_NODE" "qm create $z --name alp-$z --memory $MEM --sockets $CPU_socket --cores $CPU_core --cpu $CPU_type --net0 virtio,bridge=$Network_device" &>> /tmp/pve_vm_manager.log
-    ssh root@"$EXECUTE_NODE" "qm importdisk $z /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 ${STORAGE}" &>> /tmp/pve_vm_manager.log
+    ssh root@"$EXECUTE_NODE" "qm importdisk $z /var/vmimg/nocloud_alpine.qcow2 ${STORAGE}" &>> /tmp/pve_vm_manager.log
     ssh root@"$EXECUTE_NODE" "qm set $z --scsihw virtio-scsi-pci --scsi0 ${STORAGE}:vm-$z-disk-0" &>> /tmp/pve_vm_manager.log
     ssh root@"$EXECUTE_NODE" "qm resize $z scsi0 ${DISK}G" &>> /tmp/pve_vm_manager.log
     ssh root@"$EXECUTE_NODE" "qm set $z --ide2 ${STORAGE}:cloudinit" &>> /tmp/pve_vm_manager.log
@@ -194,7 +194,7 @@ delete_vm() {
   done
   [[ -f /tmp/pve_execute_command.log ]] && rm /tmp/pve_execute_command.log && printf "${GRN}=====delete /tmp/pve_execute_command.log completed=====${NC}\n"
   [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log && printf "${GRN}=====delete /tmp/pve_vm_manager.log completed=====${NC}\n"
-  ssh root@"$EXECUTE_NODE" rm /var/vmimg/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 &>/dev/null && printf "${GRN}=====delete nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 completed=====${NC}\n"
+  ssh root@"$EXECUTE_NODE" rm /var/vmimg/nocloud_alpine.qcow2 &>/dev/null && printf "${GRN}=====delete nocloud_alpine.qcow2 completed=====${NC}\n"
 }
 
 reboot_vm() {
@@ -234,7 +234,7 @@ debug_vm() {
 
 
 dep_kind() {
-  printf "${GRN}[Stage: Deploy Kind K8s environment to the VM]${NC}\n"
+  printf "${GRN}[Stage: Deploy kind k8s environment to the VM]${NC}\n"
   idstart=$(echo $VM_id | cut -d '~' -f 1)
   idend=$(echo $VM_id | cut -d '~' -f 2)
   ipstart=$(echo $VM_ip | cut -d '~' -f 1)
@@ -272,7 +272,7 @@ dep_kind() {
   done
 
   sleep 40
-  
+
   printf "${GRN}[Stage: Snapshot the VM]${NC}\n"
   for ((l=$idstart;l<=$idend;l++))
   do
