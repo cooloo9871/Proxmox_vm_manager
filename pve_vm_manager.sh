@@ -103,7 +103,7 @@ create_vm() {
       mkdir -p /var/lib/vz/snippets/
     fi
     if [[ ! -f /var/vmimg/nocloud_alpine.qcow2 ]]; then
-      wget https://dl-cdn.alpinelinux.org/alpine/v3.20/releases/cloud/nocloud_alpine-3.20.1-x86_64-bios-cloudinit-r0.qcow2 -O /var/vmimg/nocloud_alpine.qcow2
+      wget https://dl-cdn.alpinelinux.org/alpine/v3.19/releases/cloud/nocloud_alpine-3.19.1-x86_64-bios-cloudinit-r0.qcow2 -O /var/vmimg/nocloud_alpine.qcow2
       if [[ "$?" != '0' ]]; then
         printf "${RED}=====download cloud init image fail=====${NC}\n" && exit 1
       fi
@@ -195,7 +195,7 @@ delete_vm() {
   [[ -f /tmp/pve_execute_command.log ]] && rm /tmp/pve_execute_command.log && printf "${GRN}=====delete /tmp/pve_execute_command.log completed=====${NC}\n"
   [[ -f /tmp/pve_vm_manager.log ]] && rm /tmp/pve_vm_manager.log && printf "${GRN}=====delete /tmp/pve_vm_manager.log completed=====${NC}\n"
   ssh root@"$EXECUTE_NODE" rm /var/vmimg/nocloud_alpine.qcow2 &>/dev/null && printf "${GRN}=====delete nocloud_alpine.qcow2 completed=====${NC}\n"
-  ssh root@"$EXECUTE_NODE" rm /var/lib/vz/snippets/* &>/dev/null && printf "${GRN}=====delete cloud init yml completed=====${NC}\n"
+  ssh root@"$EXECUTE_NODE" rm '/var/lib/vz/snippets/*' &>/dev/null && printf "${GRN}=====delete cloud init yml completed=====${NC}\n"
 }
 
 reboot_vm() {
