@@ -260,9 +260,9 @@ dep_kind() {
     elif ! ssh root@"$EXECUTE_NODE" qm list | grep "$l" | grep running &>/dev/null; then
       printf "${RED}=====vm $l not running=====${NC}\n"
     else
-      sshpass -p "bigred" ssh "bigred"@"192.168.50.110" /bin/bash << EOF &>> /tmp/pve_vm_manager.log && \
-        wget -q --save-cookies /home/bigred/cookies.txt 'https://docs.google.com/uc?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh' -O- | sed -rn 's/.*name="uuid" value=\"([0-9A-Za-z_\-]+).*/\1/p' > /home/bigred/google_uuid.txt
-        wget --load-cookies /home/bigred/cookies.txt -O /home/bigred/ssh.zip 'https://drive.usercontent.google.com/download?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh&confirm=t&uuid='$(</home/bigred/google_uuid.txt)
+      sshpass -p "bigred" ssh "$USER"@"$VM_netid.$m" /bin/bash << EOF &>> /tmp/pve_vm_manager.log && \
+        wget -q --save-cookies /home/"$USER"/cookies.txt 'https://docs.google.com/uc?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh' -O- | sed -rn 's/.*name="uuid" value=\"([0-9A-Za-z_\-]+).*/\1/p' > /home/"$USER"/google_uuid.txt
+        wget --load-cookies /home/"$USER"/cookies.txt -O /home/"$USER"/ssh.zip 'https://drive.usercontent.google.com/download?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh&confirm=t&uuid='$(</home/"$USER"/google_uuid.txt)
         unzip -o ssh.zip
         rm ssh.zip cookies.txt google_uuid.txt
 EOF
