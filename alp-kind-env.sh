@@ -32,6 +32,14 @@ wget http://www.oc99.org/zip/kind2024v1.0.zip -O ~/kind2024v1.0.zip
 unzip kind2024v1.0.zip
 sudo rm -r kind2024v1.0.zip
 
+echo 'bigred:100000:65535
+rbean:200000:65535
+gbean:300000:65535' | sudo tee /etc/subuid
+
+echo 'bigred:100000:65535
+rbean:200000:65535
+gbean:300000:65535' | sudo tee /etc/subgid
+
 cat <<EOF | sudo tee /etc/profile
 #!/bin/bash
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
