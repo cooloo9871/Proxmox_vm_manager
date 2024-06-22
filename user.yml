@@ -1,5 +1,5 @@
 #cloud-config
-hostname: m109
+hostname: M109
 package_update: true
 packages:
   - nano
