@@ -41,7 +41,7 @@ EOF
 cat <<EOF | sudo tee /etc/subgid
 bigred:100000:65535
 rbean:200000:65535
-gbean:300000:65535'
+gbean:300000:65535
 EOF
 
 cat <<EOF | sudo tee /etc/profile
