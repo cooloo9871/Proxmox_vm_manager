@@ -107,7 +107,7 @@ create_vm() {
       if [[ "$?" != '0' ]]; then
         printf "${RED}=====download cloud init image fail=====${NC}\n" && exit 1
       fi
-      virt-customize --install qemu-guest-agent,bash,sudo,wget -a /var/vmimg/nocloud_alpine.qcow2
+      virt-customize --install qemu-guest-agent,bash,sudo,wget,unzip -a /var/vmimg/nocloud_alpine.qcow2
     fi
 EOF
 
