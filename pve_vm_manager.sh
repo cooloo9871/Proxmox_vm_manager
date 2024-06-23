@@ -261,10 +261,11 @@ dep_kind() {
       printf "${RED}=====vm $l not running=====${NC}\n"
     else
       sshpass -p "$PASSWORD" ssh -o "StrictHostKeyChecking no" "$USER"@"$VM_netid.$m" /bin/bash << EOF &>> /tmp/pve_vm_manager.log && \
-        wget -q --save-cookies ~/cookies.txt 'https://docs.google.com/uc?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh' -O- | sed -rn 's/.*name="uuid" value=\"([0-9A-Za-z_\-]+).*/\1/p' > ~/google_uuid.txt
-        wget --load-cookies ~/cookies.txt -O ~/ssh.zip 'https://drive.usercontent.google.com/download?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh&confirm=t&uuid='$(<~/google_uuid.txt)
+        wget -q --save-cookies ~/cookies.txt 'https://docs.google.com/uc?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh' -O- | sed -rn 's/.*name="uuid" value=\"([0-9A-Za-z_\-]+).*/\1/p' > ~/google_uuid.txt &>/dev/null
+        wget --load-cookies ~/cookies.txt -O ~/ssh.zip 'https://drive.usercontent.google.com/download?export=download&id=1SnTgWILVZY190_PyNTnBaL-HXWZ0vTIh&confirm=t&uuid='$(< ~/google_uuid.txt)
         unzip -o ssh.zip
         rm ssh.zip cookies.txt google_uuid.txt
+        chmod 600 ~/.ssh/id_rsa; chmod 600 ~/.ssh/authorized_keys
 EOF
       sshpass -p "$PASSWORD" scp -o "StrictHostKeyChecking no" -o ConnectTimeout=5 ./alp-kind-env.sh "$USER"@"$VM_netid.$m":/home/"$USER"/alp-kind-env.sh &>> /tmp/pve_vm_manager.log && \
       sshpass -p "$PASSWORD" ssh "$USER"@"$VM_netid.$m" bash /home/"$USER"/alp-kind-env.sh &>> /tmp/pve_vm_manager.log && \
