@@ -103,6 +103,7 @@ if [ -z "\$SSH_TTY" ]; then
 fi
 
 export KIND_EXPERIMENTAL_PROVIDER='podman kind create cluster'
+export KUBE_EDITOR='nano'
 EOF
 
 cat <<EOF | sudo tee /etc/local.d/rc.local.start
